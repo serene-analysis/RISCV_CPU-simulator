@@ -30,7 +30,7 @@ struct Instruction{
     // 6. 分支与跳转控制
     bool is_branch;      // 是否为条件分支指令 (BEQ, BNE, BLT 等)
     bool is_jump;        // 是否为无条件跳转指令 (JAL, JALR)
-    bool br_unsigned;    // 分支比较符控制: true = 无符号比较 (BLTU, BGEU), false = 有符号比较
+    uint_8 funct3;
 
     uint_32 rs2, rs1, rd, imm;
 };

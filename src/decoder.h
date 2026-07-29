@@ -83,11 +83,11 @@ struct Decoder{
                 ret.alu_src_a = 1;
                 ret.alu_src_b = 1;
                 ret.alu_sel = ALU_add;
-                ret.br_unsigned = (funct3 == 6 || funct3 == 7);
+                ret.funct3 = funct3;
                 break;
             }
             case 111:{ // Jal
-                ret.reg_write_en = false;
+                ret.reg_write_en = true;
                 ret.is_jump = true;
                 ret.alu_src_a = 1;
                 ret.alu_src_b = 1;
@@ -96,7 +96,7 @@ struct Decoder{
                 break;
             }
             case 103:{ // Jalr
-                ret.reg_write_en = false;
+                ret.reg_write_en = true;
                 ret.is_jump = true;
                 ret.alu_src_a = 0;
                 ret.alu_src_b = 1;

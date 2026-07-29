@@ -6,10 +6,8 @@
     ALU_slti, ALU_sltiu, ALU_passb};*/
 
 struct ALU{
-    uint_32 ALU_operation(Instruction inst, uint_32 PC){
-        bool src_a = inst.alu_src_a, src_b = inst.alu_src_b;
-        uint_8 type = inst.alu_sel;
-        uint_32 va = MUX(inst.rs1, PC, src_a), vb = MUX(inst.rs2, inst.imm, src_b);
+    uint_32 ALU_operation(uint_32 rs1, uint_32 rs2, bool src_a, bool src_b, uint_8 type, uint_32 imm, uint_32 PC){
+        uint_32 va = MUX(rs1, PC, src_a), vb = MUX(rs2, imm, src_b);
         uint_32 ret = MUX(0, ADD(va, vb), EQUAL(type, ALU_add) | EQUAL(type, ALU_addi)) |
             MUX(0, SUB(va, vb), EQUAL(type, ALU_sub)) | 
             MUX(0, AND(va, vb), EQUAL(type, ALU_and) | EQUAL(type, ALU_andi)) |

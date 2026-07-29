@@ -6,11 +6,7 @@
 
 struct DMEM{
     std::map<uint_32, uint_8> DMEM;
-    uint_8 DMEM_operation(Instruction inst, uint_32 addr){
-        uint_32 write_data = inst.rs2;
-        bool read = inst.mem_read, write = inst.mem_write,
-            nosign = inst.mem_unsigned;
-        uint_32 mask = inst.mem_mask;
+    uint_32 DMEM_operation(uint_32 write_data, bool read, bool write, bool nosign, uint_32 mask, uint_32 addr){
         uint_32 ret = 0;
         switch(read){
             case true:{
