@@ -6,7 +6,7 @@
 #include <map>
 
 struct Converter{
-    uint_32 cur;
+    uint_32 cur = 0;
     std::map<uint_32, uint_8> IMEM;
 
     void read_instruction(){

@@ -11,18 +11,20 @@ struct Decoder{
             IsIS = (opcode == 19) && ((funct3 == 1 || funct3 == 5)), IsI = (IsItype ^ IsIS),
             IsS = (opcode == 35), IsB = (opcode == 99), IsJ = (opcode == 111), IsU = (opcode == 23) || (opcode == 55);
         uint_32 immI = (funct7 << 5) | rs2, immIS = rs2,
-            immS = (funct7 << 5) | rd, immU = (inst >> 12);
+            immS = (funct7 << 5) | rd, immU = (inst >> 12) << 12;
         uint_32 immB = ((inst >> 31) << 12) | (((inst >> 7) & 1) << 11) |
             (((inst >> 25) & 63) << 5) | (((inst >> 8) & 15) << 1);
         uint_32 immJ = ((inst >> 31) << 20) | (((inst >> 12) & 255) << 12) |
             (((inst >> 20) & 1) << 11) | (((inst >> 21) & 1023) << 1);
-        uint_32 imm = (immI & ((IsI << 31) >> 31)) | (immIS & ((IsIS << 31) >> 31)) |
-            (immS & ((IsS << 31) >> 31)) | (immB & ((IsB << 31) >> 31)) |
-            (immU & ((IsU << 31) >> 31)) | (immJ & ((IsJ << 31) >> 31));
+        uint_32 imm = (immI & SUB(0, IsI)) | (immIS & SUB(0, IsIS)) |
+            (immS & SUB(0, IsS)) | (immB & SUB(0, IsB)) |
+            (immU & SUB(0, IsU)) | (immJ & SUB(0, IsJ));
+        printf("immU = %u, IsU = %d, andval = %u\n", immU, IsU, SUB(0, IsU));
         Instruction ret;
         ret.rs2 = rs2, ret.rs1 = rs1, ret.rd = rd, ret.imm = imm;
         switch(opcode){
             case 51:{ // R
+                fprintf(stderr, "type R\n");
                 ret.reg_write_en = true;
                 ret.alu_src_a = 0;
                 ret.alu_src_b = 0;
@@ -40,6 +42,7 @@ struct Decoder{
                 break;
             }
             case 19:{ // I/I* arithmetic
+                fprintf(stderr, "type I arithmetic\n");
                 ret.reg_write_en = true;
                 ret.alu_src_a = 0;
                 ret.alu_src_b = 1;
@@ -57,6 +60,7 @@ struct Decoder{
                 break;
             }
             case 3:{ // I load
+                fprintf(stderr, "type I load\n");
                 ret.reg_write_en = true;
                 ret.alu_src_a = 0;
                 ret.alu_src_b = 1;
@@ -68,6 +72,7 @@ struct Decoder{
                 break;
             }
             case 35:{ // S
+                fprintf(stderr, "type S\n");
                 ret.reg_write_en = false;
                 ret.alu_src_a = 0;
                 ret.alu_src_b = 1;
@@ -78,6 +83,7 @@ struct Decoder{
                 break;
             }
             case 99:{ // B
+                fprintf(stderr, "type B\n");
                 ret.reg_write_en = false;
                 ret.is_branch = true;
                 ret.alu_src_a = 1;
@@ -87,6 +93,7 @@ struct Decoder{
                 break;
             }
             case 111:{ // Jal
+                fprintf(stderr, "type Jal\n");
                 ret.reg_write_en = true;
                 ret.is_jump = true;
                 ret.alu_src_a = 1;
@@ -96,6 +103,7 @@ struct Decoder{
                 break;
             }
             case 103:{ // Jalr
+                fprintf(stderr, "type Jalr\n");
                 ret.reg_write_en = true;
                 ret.is_jump = true;
                 ret.alu_src_a = 0;
@@ -105,6 +113,7 @@ struct Decoder{
                 break;
             }
             case 23:{ // U add
+                fprintf(stderr, "type U add\n");
                 ret.reg_write_en = true;
                 ret.alu_src_a = 1;
                 ret.alu_src_b = 1;
@@ -113,6 +122,7 @@ struct Decoder{
                 break;
             }
             case 55:{ // U load
+                fprintf(stderr, "type U load\n");
                 ret.reg_write_en = true;
                 ret.alu_src_b = 1;
                 ret.alu_sel = ALU_passb;
@@ -120,6 +130,7 @@ struct Decoder{
                 break;
             }
             case 115:{ // I environment
+                fprintf(stderr, "type I environment\n");
                 break;
             }
             default: throw false;

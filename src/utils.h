@@ -33,6 +33,23 @@ struct Instruction{
     uint_8 funct3;
 
     uint_32 rs2, rs1, rd, imm;
+
+    Instruction(){
+        rs1 = rs2 = rd = imm = reg_write_en = alu_src_a = alu_src_b = alu_sel = mem_read = mem_write =
+            mem_mask = mem_unsigned = wb_sel = is_branch = is_jump = funct3 = 0;
+        return;
+    }
+    
+    void out(){
+        printf("rs1 = %u, rs2 = %u, rd = %u, imm = %u\n", rs1, rs2, rd, imm);
+        printf("reg_write_en = %d\n", reg_write_en);
+        printf("alu_src_a = %d, alu_src_b = %d, alu_sel = %u\n", alu_src_a, alu_src_b, uint_32(alu_sel));
+        printf("mem_read = %d, mem_write = %d, mem_mask = %u, mem_unsigned = %d\n",
+            mem_read, mem_write, uint_32(mem_mask), mem_unsigned);
+        printf("wb_sel = %u\n", uint_32(wb_sel));
+        printf("is_branch = %d, is_jump = %d, funct3 = %u\n", is_branch, is_jump, uint_32(funct3));
+        return;
+    }
 };
 
 enum ALUType{ ALU_add, ALU_sub, ALU_and, ALU_or, ALU_xor, ALU_sll, ALU_srl, ALU_sra,
@@ -60,7 +77,7 @@ uint_32 SUB(uint_32 now, uint_32 oth){
 }
 
 uint_32 AND(uint_32 now, uint_32 oth){
-    uint_32 ret;
+    uint_32 ret = 0;
     for(int i=0;i<32;i++){
         ret |= (((now >> i) & 1) & ((oth >> i) & 1)) << i;
     }
@@ -68,7 +85,7 @@ uint_32 AND(uint_32 now, uint_32 oth){
 }
 
 uint_32 OR(uint_32 now, uint_32 oth){
-    uint_32 ret;
+    uint_32 ret = 0;
     for(int i=0;i<32;i++){
         ret |= (((now >> i) & 1) | ((oth >> i) & 1)) << i;
     }
@@ -76,7 +93,7 @@ uint_32 OR(uint_32 now, uint_32 oth){
 }
 
 uint_32 XOR(uint_32 now, uint_32 oth){
-    uint_32 ret;
+    uint_32 ret = 0;
     for(int i=0;i<32;i++){
         ret |= (((now >> i) & 1) ^ ((oth >> i) & 1)) << i;
     }
@@ -84,6 +101,9 @@ uint_32 XOR(uint_32 now, uint_32 oth){
 }
 
 uint_32 MUX(uint_32 v0, uint_32 v1, bool type){
+    /*if(type == 1){
+        printf("MUX: %u, %u, %d\n", v0, v1, type);
+    }*/
     uint_32 lv = !type, rv = type;
     for(int i=1;i<32;i++){
         lv |= ((lv & 1) << i), rv |= ((rv & 1) << i);
@@ -105,7 +125,7 @@ uint_32 SLL(uint_32 now, uint_32 oth){
     for(uint_32 d=0;d<32;d++){
         bool equ = ISZERO(SUB(oth, d));
         for(int i=d;i<32;i++){
-            int nv = MUX(0, (now >> (i - d)) & 1, equ);
+            uint_32 nv = MUX(0, (now >> (i - d)) & 1, equ);
             ret |= (nv << i);
         }
     }
@@ -117,7 +137,7 @@ uint_32 SRL(uint_32 now, uint_32 oth){
     for(uint_32 d=0;d<32;d++){
         bool equ = ISZERO(SUB(oth, d));
         for(int i=0;i<32-d;i++){
-            int nv = MUX(0, (now >> (i + d)) & 1, equ);
+            uint_32 nv = MUX(0, (now >> (i + d)) & 1, equ);
             ret |= (nv << i);
         }
     }
@@ -129,11 +149,11 @@ uint_32 SRA(uint_32 now, uint_32 oth){
     for(uint_32 d=0;d<32;d++){
         bool equ = ISZERO(SUB(oth, d));
         for(int i=0;i<32-d;i++){
-            int nv = MUX(0, (now >> (i + d)) & 1, equ);
+            uint_32 nv = MUX(0, (now >> (i + d)) & 1, equ);
             ret |= (nv << i);
         }
         for(int i=32-d;i<32;i++){
-            int nv = MUX(0, (now >> 31) & 1, equ);
+            uint_32 nv = MUX(0, (now >> 31) & 1, equ);
             ret |= (nv << i);
         }
     }

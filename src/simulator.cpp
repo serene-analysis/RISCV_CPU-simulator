@@ -16,16 +16,19 @@ signed main(){
     uint_32 PC = 0;
     while(true){
         uint_32 inst = conv.fetch_instruction(PC);
-        printf("inst = %u\n", inst);
+        printf("PC = %u, inst = %u\n", PC, inst);
         if(inst == 0x0ff00513){
             printf("%u\n", regfile.read(10) & 255u);
             break;
         }
         Instruction info = dec.decode(inst);
+        info.out();
         uint_32 vrs1 = regfile.read(info.rs1), vrs2 = regfile.read(info.rs2);
         uint_32 alu_result = alu.ALU_operation(vrs1, vrs2, info.alu_src_a, info.alu_src_b, info.alu_sel, info.imm, PC);
+        printf("alu_result = %u\n", alu_result);
         uint_32 dmem_result = dmem.DMEM_operation(vrs2,
                 info.mem_read, info.mem_write, info.mem_unsigned, info.mem_mask, alu_result);
+        printf("dmem_result = %u\n", dmem_result);
         uint_32 write_back = 0;
         switch(info.wb_sel){
             case 0: write_back = dmem_result; break;
@@ -34,14 +37,16 @@ signed main(){
         }
         regfile.write(info.rd, info.reg_write_en, write_back);
         bool condition_met = false;
-        switch(info.funct3){
-            case 0: condition_met = EQUAL(vrs1, vrs2); break;
-            case 1: condition_met = !EQUAL(vrs1, vrs2); break;
-            case 4: condition_met = SLT(vrs1, vrs2); break;
-            case 5: condition_met = !SLT(vrs1, vrs2); break;
-            case 6: condition_met = SLTU(vrs1, vrs2); break;
-            case 7: condition_met = !SLTU(vrs1, vrs2); break;
-            default: throw false;
+        if(info.is_branch){
+            switch(info.funct3){
+                case 0: condition_met = EQUAL(vrs1, vrs2); break;
+                case 1: condition_met = !EQUAL(vrs1, vrs2); break;
+                case 4: condition_met = SLT(vrs1, vrs2); break;
+                case 5: condition_met = !SLT(vrs1, vrs2); break;
+                case 6: condition_met = SLTU(vrs1, vrs2); break;
+                case 7: condition_met = !SLTU(vrs1, vrs2); break;
+                default: throw false;
+            }
         }
         uint_32 cleared = (alu_result >> 1) << 1;
         PC = MUX(ADD(PC, 4), MUX(cleared, alu_result, info.alu_src_a), info.is_jump | (info.is_branch & condition_met));
