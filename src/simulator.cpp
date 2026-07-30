@@ -9,7 +9,7 @@
 signed main(){
     #ifndef ONLINE_JUDGE
     setbuf(stderr, NULL);
-    freopen("err.out","w",stderr);
+    //freopen("err.out","w",stderr);
     #endif
     Converter conv;
     Decoder dec;
