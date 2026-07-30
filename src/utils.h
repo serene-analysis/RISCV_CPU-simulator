@@ -41,13 +41,13 @@ struct Instruction{
     }
     
     void out(){
-        printf("rs1 = %u, rs2 = %u, rd = %u, imm = %u\n", rs1, rs2, rd, imm);
-        printf("reg_write_en = %d\n", reg_write_en);
-        printf("alu_src_a = %d, alu_src_b = %d, alu_sel = %u\n", alu_src_a, alu_src_b, uint_32(alu_sel));
-        printf("mem_read = %d, mem_write = %d, mem_mask = %u, mem_unsigned = %d\n",
+        fprintf(stderr, "rs1 = %u, rs2 = %u, rd = %u, imm = %u\n", rs1, rs2, rd, imm);
+        fprintf(stderr, "reg_write_en = %d\n", reg_write_en);
+        fprintf(stderr, "alu_src_a = %d, alu_src_b = %d, alu_sel = %u\n", alu_src_a, alu_src_b, uint_32(alu_sel));
+        fprintf(stderr, "mem_read = %d, mem_write = %d, mem_mask = %u, mem_unsigned = %d\n",
             mem_read, mem_write, uint_32(mem_mask), mem_unsigned);
-        printf("wb_sel = %u\n", uint_32(wb_sel));
-        printf("is_branch = %d, is_jump = %d, funct3 = %u\n", is_branch, is_jump, uint_32(funct3));
+        fprintf(stderr, "wb_sel = %u\n", uint_32(wb_sel));
+        fprintf(stderr, "is_branch = %d, is_jump = %d, funct3 = %u\n", is_branch, is_jump, uint_32(funct3));
         return;
     }
 };
@@ -102,7 +102,7 @@ uint_32 XOR(uint_32 now, uint_32 oth){
 
 uint_32 MUX(uint_32 v0, uint_32 v1, bool type){
     /*if(type == 1){
-        printf("MUX: %u, %u, %d\n", v0, v1, type);
+        fprintf(stderr, "MUX: %u, %u, %d\n", v0, v1, type);
     }*/
     uint_32 lv = !type, rv = type;
     for(int i=1;i<32;i++){
@@ -184,4 +184,10 @@ bool SLT(uint_32 now, uint_32 oth){
 
 bool EQUAL(uint_32 now, uint_32 oth){
     return ISZERO(SUB(now, oth));
+}
+
+uint_32 sign_extend(uint_32 imm, int N) {
+    int32_t val = (int32_t)imm;
+    int shift = 32 - N;
+    return uint_32((val << shift) >> shift);
 }

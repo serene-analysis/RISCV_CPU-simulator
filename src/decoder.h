@@ -16,10 +16,13 @@ struct Decoder{
             (((inst >> 25) & 63) << 5) | (((inst >> 8) & 15) << 1);
         uint_32 immJ = ((inst >> 31) << 20) | (((inst >> 12) & 255) << 12) |
             (((inst >> 20) & 1) << 11) | (((inst >> 21) & 1023) << 1);
+        immI = sign_extend(immI, 12), immS = sign_extend(immS, 12);
+        immB = sign_extend(immI, 13), immJ = sign_extend(immJ, 21);
         uint_32 imm = (immI & SUB(0, IsI)) | (immIS & SUB(0, IsIS)) |
             (immS & SUB(0, IsS)) | (immB & SUB(0, IsB)) |
             (immU & SUB(0, IsU)) | (immJ & SUB(0, IsJ));
-        printf("immU = %u, IsU = %d, andval = %u\n", immU, IsU, SUB(0, IsU));
+        fprintf(stderr, "immU = %u, IsU = %d, andval = %u\n", immU, IsU, SUB(0, IsU));
+        fprintf(stderr, "immJ = %u, IsJ = %d, andval = %u\n", immJ, IsJ, SUB(0, IsJ));
         Instruction ret;
         ret.rs2 = rs2, ret.rs1 = rs1, ret.rd = rd, ret.imm = imm;
         switch(opcode){
