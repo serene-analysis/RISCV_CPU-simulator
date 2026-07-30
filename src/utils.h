@@ -7,6 +7,8 @@ typedef unsigned short uint_16;
 typedef int int_32;
 typedef unsigned int uint_32;
 
+const static bool logout = false;
+
 struct Instruction{
     // 1. 寄存器写使能
     bool reg_write_en;   // RegWEn: 是否要将计算结果写入目标寄存器 rd
@@ -41,13 +43,13 @@ struct Instruction{
     }
     
     void out(){
-        fprintf(stderr, "rs1 = %u, rs2 = %u, rd = %u, imm = %u\n", rs1, rs2, rd, imm);
-        fprintf(stderr, "reg_write_en = %d\n", reg_write_en);
-        fprintf(stderr, "alu_src_a = %d, alu_src_b = %d, alu_sel = %u\n", alu_src_a, alu_src_b, uint_32(alu_sel));
-        fprintf(stderr, "mem_read = %d, mem_write = %d, mem_mask = %u, mem_unsigned = %d\n",
+        logout && fprintf(stderr, "rs1 = %u, rs2 = %u, rd = %u, imm = %u\n", rs1, rs2, rd, imm);
+        logout && fprintf(stderr, "reg_write_en = %d\n", reg_write_en);
+        logout && fprintf(stderr, "alu_src_a = %d, alu_src_b = %d, alu_sel = %u\n", alu_src_a, alu_src_b, uint_32(alu_sel));
+        logout && fprintf(stderr, "mem_read = %d, mem_write = %d, mem_mask = %u, mem_unsigned = %d\n",
             mem_read, mem_write, uint_32(mem_mask), mem_unsigned);
-        fprintf(stderr, "wb_sel = %u\n", uint_32(wb_sel));
-        fprintf(stderr, "is_branch = %d, is_jump = %d, funct3 = %u\n", is_branch, is_jump, uint_32(funct3));
+        logout && fprintf(stderr, "wb_sel = %u\n", uint_32(wb_sel));
+        logout && fprintf(stderr, "is_branch = %d, is_jump = %d, funct3 = %u\n", is_branch, is_jump, uint_32(funct3));
         return;
     }
 };
@@ -58,95 +60,107 @@ enum ALUType{ ALU_add, ALU_sub, ALU_and, ALU_or, ALU_xor, ALU_sll, ALU_srl, ALU_
 
 uint_32 ADD(uint_32 now, uint_32 oth){
     uint_32 ret = 0;
-    bool carry = false;
+    /*bool carry = false;
     for(int i=0;i<32;i++){
         bool lv = (now >> i) & 1, rv = (oth >> i) & 1;
         bool got = (lv & carry) | (rv & carry) | (lv & rv);
         ret |= (lv ^ rv ^ carry) << i;
         carry = got;
-    }
+    }*/
+    ret = now + oth;
     return ret;
 }
 
 uint_32 SUB(uint_32 now, uint_32 oth){
-    for(int i=0;i<32;i++){
+    /*for(int i=0;i<32;i++){
         oth ^= (1u << i);
     }
     oth = ADD(oth, 1);
-    return ADD(now, oth);
+    return ADD(now, oth);*/
+    return now - oth;
 }
 
 uint_32 AND(uint_32 now, uint_32 oth){
     uint_32 ret = 0;
-    for(int i=0;i<32;i++){
+    /*for(int i=0;i<32;i++){
         ret |= (((now >> i) & 1) & ((oth >> i) & 1)) << i;
-    }
+    }*/
+    ret = now & oth;
     return ret;
 }
 
 uint_32 OR(uint_32 now, uint_32 oth){
     uint_32 ret = 0;
-    for(int i=0;i<32;i++){
+    /*for(int i=0;i<32;i++){
         ret |= (((now >> i) & 1) | ((oth >> i) & 1)) << i;
-    }
+    }*/
+    ret = now | oth;    
     return ret;
 }
 
 uint_32 XOR(uint_32 now, uint_32 oth){
     uint_32 ret = 0;
-    for(int i=0;i<32;i++){
+    /*for(int i=0;i<32;i++){
         ret |= (((now >> i) & 1) ^ ((oth >> i) & 1)) << i;
-    }
+    }*/
+    ret = now ^ oth;
     return ret;
 }
 
 uint_32 MUX(uint_32 v0, uint_32 v1, bool type){
     /*if(type == 1){
-        fprintf(stderr, "MUX: %u, %u, %d\n", v0, v1, type);
+        logout && fprintf(stderr, "MUX: %u, %u, %d\n", v0, v1, type);
     }*/
-    uint_32 lv = !type, rv = type;
+    /*uint_32 lv = !type, rv = type;
     for(int i=1;i<32;i++){
         lv |= ((lv & 1) << i), rv |= ((rv & 1) << i);
     }
-    return OR(AND(lv, v0), AND(rv, v1));
+    return OR(AND(lv, v0), AND(rv, v1));*/
+    return type ? v1 : v0;
 }
 
 bool ISZERO(uint_32 now){
-    uint_32 ret = 1;
+    /*uint_32 ret = 1;
     for(int i=0;i<32;i++){
         bool nv = (now >> i) & 1;
         ret &= !(nv & nv);
     }
-    return ret;
+    return ret;*/
+    return now == 0;
 }
 
 uint_32 SLL(uint_32 now, uint_32 oth){
+    oth &= 31;
     uint_32 ret = 0;
-    for(uint_32 d=0;d<32;d++){
+    /*for(uint_32 d=0;d<32;d++){
         bool equ = ISZERO(SUB(oth, d));
         for(int i=d;i<32;i++){
             uint_32 nv = MUX(0, (now >> (i - d)) & 1, equ);
             ret |= (nv << i);
         }
-    }
+    }*/
+    ret = now << oth;
     return ret;
 }
 
 uint_32 SRL(uint_32 now, uint_32 oth){
+    oth &= 31;
     uint_32 ret = 0;
-    for(uint_32 d=0;d<32;d++){
+    /*for(uint_32 d=0;d<32;d++){
         bool equ = ISZERO(SUB(oth, d));
         for(int i=0;i<32-d;i++){
             uint_32 nv = MUX(0, (now >> (i + d)) & 1, equ);
             ret |= (nv << i);
         }
-    }
+    }*/
+    ret = now >> oth;
     return ret;
 }
 
 uint_32 SRA(uint_32 now, uint_32 oth){
+    oth &= 31;
     uint_32 ret = 0;
-    for(uint_32 d=0;d<32;d++){
+    /*for(uint_32 d=0;d<32;d++){
         bool equ = ISZERO(SUB(oth, d));
         for(int i=0;i<32-d;i++){
             uint_32 nv = MUX(0, (now >> (i + d)) & 1, equ);
@@ -156,22 +170,24 @@ uint_32 SRA(uint_32 now, uint_32 oth){
             uint_32 nv = MUX(0, (now >> 31) & 1, equ);
             ret |= (nv << i);
         }
-    }
+    }*/
+    ret = static_cast<uint_32>(static_cast<int_32>(now) >> oth);
     return ret;
 }
 
 bool SLTU(uint_32 now, uint_32 oth){ // (now < oth), unsigned
-    bool yes = false, no = false;
+    /*bool yes = false, no = false;
     for(int i=31;i>=0;i--){
         bool lv = (now >> i) & 1, rv = (oth >> i) & 1;
         yes = yes | ((!no) & (lv != rv) & ISZERO(lv));
         no = no | ((!yes) & (lv != rv) & ISZERO(rv));
     }
-    return yes;
+    return yes;*/
+    return now < oth;
 }
 
 bool SLT(uint_32 now, uint_32 oth){
-    bool luv = ((now >> 31) & 1), ruv = ((oth >> 31) & 1);
+    /*bool luv = ((now >> 31) & 1), ruv = ((oth >> 31) & 1);
     bool dif = (luv != ruv);
     bool yes = MUX(false, ISZERO(ruv), dif), no = MUX(false, ISZERO(luv), dif), rev = (!dif) & (!ISZERO(luv));
     for(int i=31;i>=0;i--){
@@ -179,7 +195,8 @@ bool SLT(uint_32 now, uint_32 oth){
         yes = yes | ((!no) & (lv != rv) & ISZERO(lv));
         no = no | ((!yes) & (lv != rv) & ISZERO(rv));
     }
-    return MUX(yes, !yes, rev);// can't put no because when now == oth, no == false
+    return MUX(yes, !yes, rev);// can't put no because when now == oth, no == false*/
+    return static_cast<int_32>(now) < static_cast<int_32>(oth);
 }
 
 bool EQUAL(uint_32 now, uint_32 oth){

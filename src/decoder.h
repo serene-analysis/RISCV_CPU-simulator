@@ -17,17 +17,17 @@ struct Decoder{
         uint_32 immJ = ((inst >> 31) << 20) | (((inst >> 12) & 255) << 12) |
             (((inst >> 20) & 1) << 11) | (((inst >> 21) & 1023) << 1);
         immI = sign_extend(immI, 12), immS = sign_extend(immS, 12);
-        immB = sign_extend(immI, 13), immJ = sign_extend(immJ, 21);
+        immB = sign_extend(immB, 13), immJ = sign_extend(immJ, 21);
         uint_32 imm = (immI & SUB(0, IsI)) | (immIS & SUB(0, IsIS)) |
             (immS & SUB(0, IsS)) | (immB & SUB(0, IsB)) |
             (immU & SUB(0, IsU)) | (immJ & SUB(0, IsJ));
-        fprintf(stderr, "immU = %u, IsU = %d, andval = %u\n", immU, IsU, SUB(0, IsU));
-        fprintf(stderr, "immJ = %u, IsJ = %d, andval = %u\n", immJ, IsJ, SUB(0, IsJ));
+        logout && fprintf(stderr, "immU = %u, IsU = %d, andval = %u\n", immU, IsU, SUB(0, IsU));
+        logout && fprintf(stderr, "immJ = %u, IsJ = %d, andval = %u\n", immJ, IsJ, SUB(0, IsJ));
         Instruction ret;
         ret.rs2 = rs2, ret.rs1 = rs1, ret.rd = rd, ret.imm = imm;
         switch(opcode){
             case 51:{ // R
-                fprintf(stderr, "type R\n");
+                logout && fprintf(stderr, "type R\n");
                 ret.reg_write_en = true;
                 ret.alu_src_a = 0;
                 ret.alu_src_b = 0;
@@ -45,7 +45,7 @@ struct Decoder{
                 break;
             }
             case 19:{ // I/I* arithmetic
-                fprintf(stderr, "type I arithmetic\n");
+                logout && fprintf(stderr, "type I arithmetic\n");
                 ret.reg_write_en = true;
                 ret.alu_src_a = 0;
                 ret.alu_src_b = 1;
@@ -63,7 +63,7 @@ struct Decoder{
                 break;
             }
             case 3:{ // I load
-                fprintf(stderr, "type I load\n");
+                logout && fprintf(stderr, "type I load\n");
                 ret.reg_write_en = true;
                 ret.alu_src_a = 0;
                 ret.alu_src_b = 1;
@@ -75,7 +75,7 @@ struct Decoder{
                 break;
             }
             case 35:{ // S
-                fprintf(stderr, "type S\n");
+                logout && fprintf(stderr, "type S\n");
                 ret.reg_write_en = false;
                 ret.alu_src_a = 0;
                 ret.alu_src_b = 1;
@@ -86,7 +86,7 @@ struct Decoder{
                 break;
             }
             case 99:{ // B
-                fprintf(stderr, "type B\n");
+                logout && fprintf(stderr, "type B, funct3 = %u\n", uint_32(funct3));
                 ret.reg_write_en = false;
                 ret.is_branch = true;
                 ret.alu_src_a = 1;
@@ -96,7 +96,7 @@ struct Decoder{
                 break;
             }
             case 111:{ // Jal
-                fprintf(stderr, "type Jal\n");
+                logout && fprintf(stderr, "type Jal\n");
                 ret.reg_write_en = true;
                 ret.is_jump = true;
                 ret.alu_src_a = 1;
@@ -106,7 +106,7 @@ struct Decoder{
                 break;
             }
             case 103:{ // Jalr
-                fprintf(stderr, "type Jalr\n");
+                logout && fprintf(stderr, "type Jalr\n");
                 ret.reg_write_en = true;
                 ret.is_jump = true;
                 ret.alu_src_a = 0;
@@ -116,7 +116,7 @@ struct Decoder{
                 break;
             }
             case 23:{ // U add
-                fprintf(stderr, "type U add\n");
+                logout && fprintf(stderr, "type U add\n");
                 ret.reg_write_en = true;
                 ret.alu_src_a = 1;
                 ret.alu_src_b = 1;
@@ -125,7 +125,7 @@ struct Decoder{
                 break;
             }
             case 55:{ // U load
-                fprintf(stderr, "type U load\n");
+                logout && fprintf(stderr, "type U load\n");
                 ret.reg_write_en = true;
                 ret.alu_src_b = 1;
                 ret.alu_sel = ALU_passb;
@@ -133,10 +133,13 @@ struct Decoder{
                 break;
             }
             case 115:{ // I environment
-                fprintf(stderr, "type I environment\n");
+                logout && fprintf(stderr, "type I environment\n");
                 break;
             }
-            default: throw false;
+            default:{
+                fflush(stderr);
+                throw false;
+            }
         }
         return ret;
     }

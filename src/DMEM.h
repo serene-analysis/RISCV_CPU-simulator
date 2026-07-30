@@ -27,7 +27,10 @@ struct DMEM{
                     ret = nv;
                     break;
                 }
-                default: throw false;
+                default:{
+                    fflush(stderr);
+                    throw false;
+                }
             }
         }
         if(write){
@@ -46,7 +49,10 @@ struct DMEM{
                     DMEM[addr] = v0, DMEM[addr + 1] = v1, DMEM[addr + 2] = v2, DMEM[addr + 3] = v3;
                     break;
                 }
-                default: throw false;
+                default:{
+                    fflush(stderr);
+                    throw false;
+                }
             }
         }
         return ret;
