@@ -15,7 +15,11 @@ signed main(){
     conv.read_instruction();
     uint_32 PC = 0;
     int timestamp = 0;
-    while(true && ++timestamp < 20){
+    bool onl = false;
+    #ifdef ONLINE_JUDGE
+    onl = true;
+    #endif
+    while(true && (++timestamp < 20 || onl)){
         fprintf(stderr, "\n\ntimestamp = %d \n\n\n", timestamp);
         uint_32 inst = conv.fetch_instruction(PC);
         fprintf(stderr, "PC = %u = 0x%x, inst = %u\n", PC, PC, inst);
