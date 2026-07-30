@@ -5,7 +5,7 @@
 #include <cassert>
 
 struct DMEM{
-    std::map<uint_32, uint_8> DMEM;
+    std::map<uint_32, uint_8> DMEM, DMEM_next;
     uint_32 DMEM_operation(uint_32 write_data, bool read, bool write, bool nosign, uint_32 mask, uint_32 addr){
         uint_32 ret = 0;
         if(read){
@@ -38,15 +38,15 @@ struct DMEM{
                 v2 = (write_data >> 16) & 255, v3 = write_data >> 24;
             switch(mask){
                 case 0:{
-                    DMEM[addr] = v0;
+                    DMEM_next[addr] = v0;
                     break;
                 }
                 case 1:{
-                    DMEM[addr] = v0, DMEM[addr + 1] = v1;
+                    DMEM_next[addr] = v0, DMEM_next[addr + 1] = v1;
                     break;
                 }
                 case 2:{
-                    DMEM[addr] = v0, DMEM[addr + 1] = v1, DMEM[addr + 2] = v2, DMEM[addr + 3] = v3;
+                    DMEM_next[addr] = v0, DMEM_next[addr + 1] = v1, DMEM_next[addr + 2] = v2, DMEM_next[addr + 3] = v3;
                     break;
                 }
                 default:{
@@ -56,5 +56,12 @@ struct DMEM{
             }
         }
         return ret;
+    }
+    void DMEM_tick(){
+        for(auto now : DMEM_next){
+            DMEM[now.first] = now.second;
+        }
+        DMEM_next.clear();
+        return;
     }
 };
