@@ -54,6 +54,156 @@ struct Instruction{
     }
 };
 
+template<typename tp>
+struct Unit{
+    tp curr;
+    tp next;
+    Unit() : curr(tp()), next(tp()){}
+    Unit(tp cur, tp nxt) : curr(cur), next(nxt) {}
+};
+
+template<typename tp, int n>
+struct Queue{
+    Unit<tp> v[n + 2];
+    Unit<int> l(1, 1), r(1, 1);
+    bool empty(){
+        return l.curr == r.curr;
+    }
+    int nxt(int x){
+        return x == n + 1 ? 1 : x + 1;
+    }
+    bool full(){
+        return l.curr == nxt(r.curr);
+    }
+    int size(){
+        if(l < r){
+            return r - l;
+        }
+        return r + n - l;
+    }
+    bool nearly_full(){
+        return size() >= n - 4;
+    }
+    tp front(){
+        return v[l.curr].curr;
+    }
+    void pop(){
+        l.next = nxt(l.curr);
+        return;
+    }
+    void push(tp x){
+        v[r.curr].next = x, r.next = nxt(r.curr);
+        return;
+    }
+};
+
+struct Converter;
+struct Decoder;
+struct DMEM;
+struct RegFile;
+
+struct IF;
+
+struct IF_IS_Buffer{
+    bool valid = false;
+    uint_32 inst;
+    uint_32 PC, predicted_PC;
+};
+
+struct IS;
+
+struct IS_ArithRS_Buffer{
+    bool valid = false;
+    uint_32 rob_tag;
+    uint_32 vj, qj, vk, qk;
+    bool alu_src_a, alu_src_b;
+    uint_8 alu_sel;
+    uint_32 imm, PC;
+};
+struct ArithRSEntry{
+    bool busy;
+    uint_32 rob_tag;
+    uint_32 vj, qj, vk, qk;
+    bool alu_src_a, alu_src_b;
+    uint_8 alu_sel;
+    uint_32 imm, PC;
+};
+
+struct RAT;
+struct ROB;
+struct RegFile;
+
+struct ArithRS;
+
+struct ArithRS_ALU_Buffer{
+    bool valid = false;
+    uint_32 rob_tag;
+    uint_32 operand_a, operand_b;
+    uint_8 alu_sel;
+};
+
+struct ALU;
+
+struct ALU_CDB_Buffer{
+    bool valid = false;
+    uint_32 rob_tag;
+    uint_32 alu_result;
+};
+
+struct IS_BranchRS_Buffer{
+    bool valid = false;
+    uint_32 rob_tag;
+    uint_32 vj, qj, vk, qk;
+    uint_8 funct3;
+    bool is_jump, is_jalr;
+    bool jump_taken;
+    uint_32 imm, PC;
+};
+
+struct BranchRS;
+
+struct BranchRS_BU_Buffer{
+
+};
+
+struct BU;
+
+struct BU_CDB_Buffer{
+
+};
+
+struct IS_LSQ_Buffer{
+    bool valid = false;
+    uint_32 rob_tag;
+    uint_32 vj, qj, vk, qk;
+    bool mem_read, mem_write, mem_mask, mem_unsigned;
+    uint_32 imm;
+    uint_32 sq_index, lq_index;
+};
+
+struct LSQ;
+
+struct LSQ_CDB_Buffer{
+
+};
+
+struct CDB;
+
+struct CDB_Broadcast_Buffer{
+    uint_32 rob_tag, result;
+};
+
+struct ROBEntry{
+    bool busy = false;
+    uint_8 type;
+    uint_32 dest;
+    uint_32 value;
+    bool ready;
+    bool branch_misjumped;
+    uint_32 PC, goal_PC;
+    uint_8 state; // 1: Issue, 2: Executing, 3: Writeback, 4: Commit
+};
+
 enum ALUType{ ALU_add, ALU_sub, ALU_and, ALU_or, ALU_xor, ALU_sll, ALU_srl, ALU_sra,
     ALU_slt, ALU_sltu, ALU_addi, ALU_andi, ALU_ori, ALU_xori, ALU_slli, ALU_srli, ALU_srai,
     ALU_slti, ALU_sltiu, ALU_passb};

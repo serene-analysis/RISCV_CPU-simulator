@@ -6,8 +6,10 @@
     ALU_slti, ALU_sltiu, ALU_passb};*/
 
 struct ALU{
-    uint_32 ALU_operation(uint_32 rs1, uint_32 rs2, bool src_a, bool src_b, uint_8 type, uint_32 imm, uint_32 PC){
-        uint_32 va = MUX(rs1, PC, src_a), vb = MUX(rs2, imm, src_b);
+    Unit<ArithRS_ALU_Buffer> buf;
+    Unit<ALU_CDB_Buffer> mem[5];
+    void move(ALU_CDB_Buffer &Cbuf, bool &ArithRSStall){
+        /*uint_32 va = MUX(rs1, PC, src_a), vb = MUX(rs2, imm, src_b);
         logout && fprintf(stderr, "ALU_operation: va = %u, vb = %u, type = %u\n", va, vb, uint_32(type));
         uint_32 ret = MUX(0, ADD(va, vb), EQUAL(type, ALU_add) | EQUAL(type, ALU_addi)) |
             MUX(0, SUB(va, vb), EQUAL(type, ALU_sub)) | 
@@ -21,6 +23,6 @@ struct ALU{
             MUX(0, SLTU(va, vb), EQUAL(type, ALU_sltu) | EQUAL(type, ALU_sltiu)) |
             MUX(0, vb, EQUAL(type, ALU_passb));
         logout && fprintf(stderr, "ret = %u\n", ret);
-        return ret;
+        return ret;*/
     }
 };

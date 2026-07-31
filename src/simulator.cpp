@@ -29,7 +29,7 @@ signed main(){
     #endif
     while(true && (++timestamp < 20 || onl)){
 
-        logout && fprintf(stderr, "\n\ntimestamp = %d \n\n\n", timestamp);
+        /*logout && fprintf(stderr, "\n\ntimestamp = %d \n\n\n", timestamp);
         uint_32 inst = conv.fetch_instruction(PC);
         logout && fprintf(stderr, "PC = %u = 0x%x, inst = %u\n", PC, PC, inst);
         if(inst == 0x0ff00513){
@@ -78,7 +78,7 @@ signed main(){
 
         dmem.DMEM_tick();
         regfile.RegFile_tick();
-        PC = PC_next;
+        PC = PC_next;*/
     }
     return 0;
 }
