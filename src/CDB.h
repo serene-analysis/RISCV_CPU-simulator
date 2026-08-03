@@ -24,7 +24,6 @@ void CDB::move(ROB &rob, bool &UseA, bool &UseB, bool &UseLS, uint_32 &IdA, uint
         rob.qu.v[pos].next.mem_unsigned = LSbuf.curr.mem_unsigned;
         rob.qu.v[pos].next.mem_mask = LSbuf.curr.mem_mask;
         if(LSbuf.curr.is_read){
-            Cbuf.next.valid = true;
             Cbuf.next.rob_tag = LSbuf.curr.rob_tag, Cbuf.next.result = LSbuf.curr.load_result;
         }
     }
@@ -52,7 +51,6 @@ void CDB::move(ROB &rob, bool &UseA, bool &UseB, bool &UseLS, uint_32 &IdA, uint
         rob.qu.v[pos].next.type = 1;
         rob.qu.v[pos].next.value = Abuf.curr.alu_result;
         rob.qu.v[pos].next.done = true;
-        Cbuf.next.valid = true;
         Cbuf.next.rob_tag = Abuf.curr.rob_tag, Cbuf.next.result = Abuf.curr.alu_result;
     }
     return;
@@ -63,7 +61,7 @@ void CDB::flush(){
 }
 void CDB::tick(){
     Abuf.tick(), Bbuf.tick(), LSbuf.tick(), Cbuf.tick();
-    Abuf.next.valid = false, Bbuf.next.valid = false, LSbuf.next.valid = false, Cbuf.next.valid = false;
+    Abuf.next.valid = false, Bbuf.next.valid = false, LSbuf.next.valid = false; // Don't clear the broadcast, it should last
     last_id.tick(), last_type.tick(), flushed.tick();
     last_id.next = last_type.next = 0;
     flushed.next = false;
