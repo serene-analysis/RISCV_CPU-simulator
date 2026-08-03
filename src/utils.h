@@ -2,6 +2,8 @@
 
 #include <cassert>
 #include <cstdio>
+#include <map>
+#include <string>
 
 typedef char int_8;
 typedef unsigned char uint_8;
@@ -83,7 +85,7 @@ struct Queue{
         return l.curr == nxt(r.curr);
     }
     int size(){
-        if(l.curr < r.curr){
+        if(l.curr <= r.curr){
             return r.curr - l.curr;
         }
         return r.curr + n - l.curr;
@@ -104,8 +106,15 @@ struct Queue{
     }
 };
 
-struct Converter;
-struct Decoder;
+struct Converter{
+    uint_32 cur = 0;
+    std::map<uint_32, uint_8> IMEM;
+    void read_instruction();
+    uint_32 fetch_instruction(uint_32 addr);
+};
+struct Decoder{
+    Instruction decode(uint_32 inst);
+};
 struct DMEM;
 struct RegFile;
 
@@ -135,7 +144,7 @@ struct IS{
     Unit<IF_IS_Buffer> buf;
     Unit<bool> RSstall, ROBstall, flushed;
     void move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &LSbuf,
-        RAT &rat, RegFile &regfile, ROB &rob, bool &IFStall, bool &Foretold, uint_32 &Foretold_PC, bool &final_end);
+        RAT &rat, RegFile &regfile, ROB &rob, bool &IFStall, bool &Foretold, uint_32 &Foretold_PC, uint_32 &end_tag);
     void flush();
     void tick();
 };
@@ -194,6 +203,20 @@ struct ROB_CommitStore_Buffer{
 struct ArithRS;
 struct BranchRS;
 struct LSQ;
+
+struct ArithRS_ALU_Buffer{
+    bool valid = false;
+    uint_32 rob_tag;
+    uint_32 operand_a, operand_b;
+    uint_8 alu_sel;
+};
+
+struct ALU_CDB_Buffer{
+    bool valid = false;
+    uint_32 rob_tag;
+    uint_32 alu_result;
+    uint_32 submitted_id;
+};
 struct ALU{
     const static int Memsize_ = 8;
     Unit<ArithRS_ALU_Buffer> buf;
@@ -203,6 +226,25 @@ struct ALU{
     void move(ALU_CDB_Buffer &Cbuf, bool &ArithRSStall);
     void flush();
     void tick();
+};
+
+struct BU_CDB_Buffer{
+    bool valid = false;
+    uint_32 rob_tag;
+    bool mispredicted;
+    uint_32 actual_dest;
+    uint_32 submitted_id;
+};
+
+struct BranchRS_BU_Buffer{
+    bool valid = false;
+    uint_32 rob_tag;
+    uint_32 vj, vk;
+    uint_8 funct3;
+    bool is_jump, is_jalr;
+    bool predicted_jump;
+    uint_32 nojump_dest, jump_dest;
+    uint_32 imm, PC;
 };
 struct BU{
     const static int Memsize_ = 8;
@@ -222,16 +264,10 @@ struct ROB{
     Unit<bool> flushed;
     void allocate(const uint_8 &type, const uint_8 &rd, const uint_32 PC, const bool &predicted_jump,
         const uint_32 &nojump_dest, const uint_32 &jump_dest, bool &ISStall, uint_32 &ret);
-    void move(IF &If, IS &Is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU &Bu, DMEM &Dmem, CDB &Cdb, RegFile &Rf, RAT &Rat);
+    void move(IF &If, IS &Is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU &Bu,
+        DMEM &Dmem, CDB &Cdb, RegFile &Rf, RAT &Rat, bool &ended, uint_32 &end_tag);
     void flush();
     void tick();
-};
-
-struct ArithRS_ALU_Buffer{
-    bool valid = false;
-    uint_32 rob_tag;
-    uint_32 operand_a, operand_b;
-    uint_8 alu_sel;
 };
 struct CDB_Broadcast_Buffer{
     bool valid = false;
@@ -245,13 +281,6 @@ struct ArithRS{
     void move(ArithRS_ALU_Buffer &ABuf, const CDB_Broadcast_Buffer &CBuf, bool &ISStall);
     void flush();
     void tick();
-};
-
-struct ALU_CDB_Buffer{
-    bool valid = false;
-    uint_32 rob_tag;
-    uint_32 alu_result;
-    uint_32 submitted_id;
 };
 
 struct IS_BranchRS_Buffer{
@@ -285,23 +314,6 @@ struct BranchRS{
     void tick();
 };
 
-struct BranchRS_BU_Buffer{
-    bool valid = false;
-    uint_32 rob_tag;
-    uint_32 vj, vk;
-    uint_8 funct3;
-    bool is_jump, is_jalr;
-    bool predicted_jump;
-    uint_32 nojump_dest, jump_dest;
-    uint_32 imm, PC;
-};
-struct BU_CDB_Buffer{
-    bool valid = false;
-    uint_32 rob_tag;
-    bool mispredicted;
-    uint_32 actual_dest;
-    uint_32 submitted_id;
-};
 
 struct IS_LSQ_Buffer{
     bool valid = false;
@@ -333,6 +345,14 @@ struct StoreEntry{
     bool submitted;
 };
 
+struct LSQ_DMEM_Buffer{
+    bool valid = false;
+    uint_32 rob_tag;
+    uint_32 rd, write_data, goal_addr;
+    bool mem_read, mem_write, mem_unsigned;
+    uint_8 mem_mask;
+};
+
 struct LSQ{
     const static int EntrySize_ = 32;
     Unit<IS_LSQ_Buffer> buf;
@@ -343,14 +363,6 @@ struct LSQ{
     void move(LSQ_DMEM_Buffer &Dbuf, CDB_Broadcast_Buffer &Cbuf, const ROB_CommitStore_Buffer &Rbuf, bool &ISStall);
     void flush();
     void tick();
-};
-
-struct LSQ_DMEM_Buffer{
-    bool valid = false;
-    uint_32 rob_tag;
-    uint_32 rd, write_data, goal_addr;
-    bool mem_read, mem_write, mem_unsigned;
-    uint_8 mem_mask;
 };
 
 struct DMEMEntry{

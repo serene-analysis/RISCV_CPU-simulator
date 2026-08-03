@@ -26,13 +26,14 @@ void ALU::move(ALU_CDB_Buffer &Cbuf, bool &ArithRSStall){
             epos = i;
         }
     }
+    fprintf(stderr, "ALU : got = %d\n", got);
     if(got >= Memsize_ - 4){
         ArithRSStall = true;
     }
     if(buf.curr.valid){
         uint_32 va = buf.curr.operand_a, vb = buf.curr.operand_b;
         uint_8 type = buf.curr.alu_sel;
-        //logout && fprintf(stderr, "ALU_operation: va = %u, vb = %u, type = %u\n", va, vb, uint_32(type));
+        fprintf(stderr, "ALU_operation: va = %u, vb = %u, type = %u\n", va, vb, uint_32(type));
         uint_32 ret = MUX(0, ADD(va, vb), EQUAL(type, ALU_add) | EQUAL(type, ALU_addi)) |
             MUX(0, SUB(va, vb), EQUAL(type, ALU_sub)) | 
             MUX(0, AND(va, vb), EQUAL(type, ALU_and) | EQUAL(type, ALU_andi)) |

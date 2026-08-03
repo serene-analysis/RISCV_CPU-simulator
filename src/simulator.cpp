@@ -33,26 +33,22 @@ signed main(){
     RAT rat;
     RegFile rf;
     ROB rob;
-    If.conv.fetch_instruction(0);
+    If.conv.read_instruction();
     for(auto now : If.conv.IMEM){
         dmem.DMEM[now.first] = (Unit<uint_8>){now.second, now.second};
     }
     If.PC.curr = If.PC.next = 0;
     int timestamp = 0;
     bool ended = false;
-    int countdown = 1000;
-    while(true){
-        countdown -= ended;
-        if(!countdown){
-            printf("%u", rf.reg[10].curr & 255u);
-            return 0;
-        }
-        rob.move(If, is, ars, brs, lsq, alu, bu, dmem, cdb, rf, rat);
+    uint_32 end_tag = 0;
+    while(!ended && timestamp < 40){
+        printf("timestamp = %d\n", ++timestamp);
+        rob.move(If, is, ars, brs, lsq, alu, bu, dmem, cdb, rf, rat, ended, end_tag);
         lsq.move(dmem.buf.next, cdb.Cbuf.curr, rob.Rbuf.curr, is.RSstall.next);
-        if(!ended){
-            is.move(ars.buf.next, brs.buf.next, lsq.buf.next, rat, rf, rob, If.stall.next, If.foretold.next, If.foretold_PC.next, ended);
+        if(end_tag == 0){
+            is.move(ars.buf.next, brs.buf.next, lsq.buf.next, rat, rf, rob, If.stall.next, If.foretold.next, If.foretold_PC.next, end_tag);
         }
-        if(!ended){
+        if(end_tag == 0){
             If.move(is.buf.next);
         }
         dmem.move(cdb.LSbuf.next, lsq.stall.next);

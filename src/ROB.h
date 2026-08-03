@@ -22,11 +22,11 @@ void ROB::allocate(const uint_8 &type, const uint_8 &rd, const uint_32 PC, const
     if(qu.nearly_full()){
         ISStall = true;
     }
-    qu.push((ROBEntry){true, qu.cnt.curr + 1, type, rd, 0, predicted_jump, false, nojump_dest, jump_dest, false, 0, false, 0}); // Need an adder
+    qu.push((ROBEntry){true, uint_32(qu.cnt.curr) + 1, type, rd, 0, predicted_jump, false, nojump_dest, jump_dest, false, 0, false, 0}); // Need an adder
     ret = qu.cnt.curr + 1;
     return;
 }
-void ROB::move(IF &If, IS &Is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU &Bu, DMEM &Dmem, CDB &Cdb, RegFile &Regfile, RAT &Rat){
+void ROB::move(IF &If, IS &Is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU &Bu, DMEM &Dmem, CDB &Cdb, RegFile &Regfile, RAT &Rat, bool &ended, uint_32 &end_tag){
     if(flushed.curr){
         qu.l.next = qu.r.next = 1;
         return;
@@ -36,6 +36,12 @@ void ROB::move(IF &If, IS &Is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, 
     }
     ROBEntry fir = qu.front();
     if(fir.done){
+        fprintf(stderr, "fir.type = %u\n", uint_32(fir.type));
+        if(fir.rob_tag == end_tag){
+            ended = true;
+            printf("%u\n", Regfile.reg[10].curr & 255u);
+            return;
+        }
         if(fir.type == 1){
             Regfile.write(fir.rd, fir.value);
             Rat.unlock(fir.rd, fir.rob_tag);

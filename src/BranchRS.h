@@ -35,6 +35,7 @@ void BranchRS::move(BranchRS_BU_Buffer &Bbuf, CDB_Broadcast_Buffer &Cbuf, bool &
         }
     }
     if(got >= EntrySize_ - 4){
+        fprintf(stderr, "BranchRS:ISStall\n");
         ISStall = true;
     }
     if(!stall.curr && bpos != EntrySize_){

@@ -32,6 +32,7 @@ void LSQ::move(LSQ_DMEM_Buffer &Dbuf, CDB_Broadcast_Buffer &Cbuf, const ROB_Comm
         }
         return;
     }
+    fprintf(stderr, "LSQ : lq.size() = %d, sq.size() = %d, buf.valid = %d\n", lq.size(), sq.size(), buf.curr.valid);
     uint_32 lgot = 0, sgot = 0;
     for(int i=0;i<EntrySize_;i++){
         if(Cbuf.valid && lq.v[i].curr.busy){
@@ -67,6 +68,7 @@ void LSQ::move(LSQ_DMEM_Buffer &Dbuf, CDB_Broadcast_Buffer &Cbuf, const ROB_Comm
         }
     }
     if(lq.nearly_full() || sq.nearly_full()){
+        fprintf(stderr, "LSQ:ISStall\n");
         ISStall = true;
     }
     if(Rbuf.valid){

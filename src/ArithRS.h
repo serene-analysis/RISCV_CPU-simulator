@@ -31,7 +31,9 @@ void ArithRS::move(ArithRS_ALU_Buffer &Abuf, const CDB_Broadcast_Buffer &Cbuf, b
             epos = i;
         }
     }
+    fprintf(stderr, "ArithRS : got = %d\n", got);
     if(got >= EntrySize_ - 4){
+        fprintf(stderr, "ArithRS:ISStall\n");
         ISStall = true;
     }
     if(!stall.curr && bpos != EntrySize_){

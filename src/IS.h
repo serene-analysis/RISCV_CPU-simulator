@@ -40,8 +40,9 @@ struct IS_LSQ_Buffer{
 */
 
 void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &LSbuf,
-    RAT &rat, RegFile &regfile, ROB &rob, bool &IFStall, bool &Foretold, uint_32 &Foretold_PC, bool &final_end){
+    RAT &rat, RegFile &regfile, ROB &rob, bool &IFStall, bool &Foretold, uint_32 &Foretold_PC, uint_32 &end_tag){
     Abuf = IS_ArithRS_Buffer(), Bbuf = IS_BranchRS_Buffer(), LSbuf = IS_LSQ_Buffer();
+    fprintf(stderr, "IS : flushed = %d, RSstall = %d, ROBstall = %d\n", flushed.curr, RSstall.curr, ROBstall.curr);
     if(flushed.curr){
         buf.next.valid = false;
         return;
@@ -51,14 +52,10 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
         if(rob.qu.nearly_full()){
             ROBstall.next = true;
         }
-        return;
     }
     if(buf.curr.valid){
-        if(buf.curr.inst == 0x0ff00513){
-            final_end = true;
-            return;
-        }
         Instruction inst = dec.decode(buf.curr.inst);
+        fprintf(stderr, "valid, inst = %u\n", buf.curr.inst), inst.out();
         if(inst.mem_read || inst.mem_write){
             LSbuf.valid = true;
             LSbuf.mem_read = inst.mem_read, LSbuf.mem_write = inst.mem_write;
@@ -67,6 +64,9 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
             if(inst.mem_read){
                 uint_32 ntag = 0, nqj = 0, nqk = 0;
                 rob.allocate(1, inst.rd, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), LSbuf.rob_tag = ntag;
+                if(buf.curr.inst == 0x0ff00513){
+                    end_tag = ntag;
+                }
                 rat.query(inst.rs1, nqj), LSbuf.qj = nqj;
                 if(!nqj){
                     regfile.read(inst.rs1, LSbuf.vj);
@@ -78,6 +78,9 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
                 assert(inst.mem_write);
                 uint_32 ntag = 0, nqj = 0, nqk = 0;
                 rob.allocate(1, inst.rd, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), LSbuf.rob_tag = ntag;
+                if(buf.curr.inst == 0x0ff00513){
+                    end_tag = ntag;
+                }
                 rat.query(inst.rs1, nqj), rat.query(inst.rs2, nqk), LSbuf.qj = nqj, LSbuf.qk = nqk;
                 if(!nqj){
                     regfile.read(inst.rs1, LSbuf.vj);
@@ -96,6 +99,9 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
             if(inst.is_jump && inst.alu_src_a == 1){ // jal
                 uint_32 ntag = 0, nqj = 0, nqk = 0;
                 rob.allocate(1, inst.rd, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), Bbuf.rob_tag = ntag;
+                if(buf.curr.inst == 0x0ff00513){
+                    end_tag = ntag;
+                }
                 Bbuf.vj = buf.curr.PC, Bbuf.vk = inst.imm;
                 Bbuf.qj = Bbuf.qk = 0;
                 rat.mark(inst.rd, ntag);
@@ -106,6 +112,9 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
             else if(inst.is_jump){ // jalr
                 uint_32 ntag = 0, nqj = 0, nqk = 0;
                 rob.allocate(1, inst.rd, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), Bbuf.rob_tag = ntag;
+                if(buf.curr.inst == 0x0ff00513){
+                    end_tag = ntag;
+                }
                 rat.query(inst.rs1, nqj), Bbuf.qj = nqj;
                 if(!nqj){
                     regfile.read(inst.rs1, Bbuf.vj);
@@ -119,6 +128,9 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
             else{
                 uint_32 ntag = 0, nqj = 0, nqk = 0;
                 rob.allocate(1, inst.rd, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), Bbuf.rob_tag = ntag;
+                if(buf.curr.inst == 0x0ff00513){
+                    end_tag = ntag;
+                }
                 rat.query(inst.rs1, nqj), rat.query(inst.rs2, nqk), Bbuf.qj = nqj, Bbuf.qk = nqk;
                 if(!nqj){
                     regfile.read(inst.rs1, Bbuf.vj);
@@ -135,6 +147,10 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
             Abuf.valid = true;
             uint_32 ntag = 0, nqj = 0, nqk = 0;
             rob.allocate(1, inst.rd, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), Abuf.rob_tag = ntag;
+            if(buf.curr.inst == 0x0ff00513){
+                end_tag = ntag;
+                fprintf(stderr, "\n\nend_tag appeared!\n\n\n");
+            }
             if(inst.alu_src_a == 0){
                 rat.query(inst.rs1, nqj), Abuf.qj = nqj;
                 if(!nqj){
@@ -168,6 +184,7 @@ void IS::flush(){
 }
 void IS::tick(){
     buf.tick();
+    //fprintf(stderr, "IS::buf.tick(), buf.valid = %d\n", buf.curr.valid);
     buf.next.valid = false;
     RSstall.tick(), ROBstall.tick(), flushed.tick();
     RSstall.next = ROBstall.next = flushed.next = false;
