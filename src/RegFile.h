@@ -3,15 +3,20 @@
 #include "utils.h"
 
 struct RegFile{
-    uint_32 reg[32] = {}, reg_next[32] = {};
-    uint_32 read(uint_32 pos){ return reg[pos];}
-    void write(uint_32 pos, bool enabled, uint_32 val){
-        reg_next[pos] = MUX(reg[pos], val, enabled && !ISZERO(pos));
+    Unit<uint_32> reg[32] = {};
+    void read(const uint_32 &pos, uint_32 &ret){
+        ret = reg[pos].curr;
         return;
     }
-    void RegFile_tick(){
+    void write(const uint_32 &pos, const uint_32 &value){
+        if(pos != 0){
+            reg[pos].next = value;
+        }
+        return;
+    }
+    void tick(){
         for(int i=0;i<32;i++){
-            reg[i] = reg_next[i];
+            reg[i].tick();
         }
         return;
     }

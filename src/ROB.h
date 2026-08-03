@@ -1,10 +1,91 @@
 #pragma once
 
 #include "utils.h"
+#include "DMEM.h"
+#include "RegFile.h"
 
-struct ROB{
-    Queue<ROBEntry, 32> qu;
-    uint_8 allocate(uint_8 type, bool &ISStall){
-        
-    }
+/*
+struct ROBEntry{
+    bool busy = false;
+    uint_8 type; // 1: Arithmetic, 2: Branch, 3: Memory
+    uint_8 rd;
+    uint_32 value;
+    bool ready;
+    bool predicted_jump, branch_misjumped;
+    uint_32 nojump_dest, jump_dest;
+    bool done; // can be commited or not
 };
+*/
+
+void ROB::allocate(const uint_8 &type, const uint_8 &rd, const uint_32 PC, const bool &predicted_jump,
+    const uint_32 &nojump_dest, const uint_32 &jump_dest, bool &ISStall, uint_32 &ret){
+    if(qu.nearly_full()){
+        ISStall = true;
+    }
+    qu.push((ROBEntry){true, qu.cnt.curr + 1, type, rd, 0, predicted_jump, false, nojump_dest, jump_dest, false, 0, false, 0}); // Need an adder
+    ret = qu.cnt.curr + 1;
+    return;
+}
+void ROB::move(IF &If, IS &Is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU &Bu, DMEM &Dmem, CDB &Cdb, RegFile &Regfile, RAT &Rat){
+    if(flushed.curr){
+        qu.l.next = qu.r.next = 1;
+        return;
+    }
+    if(qu.empty()){
+        return;
+    }
+    ROBEntry fir = qu.front();
+    if(fir.done){
+        if(fir.type == 1){
+            Regfile.write(fir.rd, fir.value);
+            Rat.unlock(fir.rd, fir.rob_tag);
+            qu.pop();
+        }
+        else if(fir.type == 2){
+            if(fir.branch_misjumped){
+                If.flush(), Is.flush(), Ars.flush(), Brs.flush(), Lsq.flush(), Alu.flush(), Bu.flush(), Dmem.flush(), Cdb.flush(), Rat.flush(), flush();
+                If.redirected.next = true;
+                If.redirected_PC.next = fir.value;
+            }
+            qu.pop();
+        }
+        else if(fir.type == 3){
+            if(fir.is_read){
+                Regfile.write(fir.rd, fir.value);
+                Rat.unlock(fir.rd, fir.rob_tag);
+                qu.pop();
+            }
+            else{
+                if(fir.remaining_round != 0){
+                    qu.v[qu.l.curr].next.remaining_round = fir.remaining_round - 1;
+                }
+                else{
+                    uint_32 no_use = 0;
+                    Dmem.DMEM_operation(fir.value, false, true, fir.mem_unsigned, fir.mem_mask, fir.write_addr, no_use);
+                    Rbuf.next.valid = true;
+                    Rbuf.next.rob_tag = fir.rob_tag;
+                    qu.pop();
+                }
+            }
+        }
+        else{
+            assert(false);
+        }
+    }
+}
+void ROB::flush(){
+    flushed.next = true;
+    return;
+}
+void ROB::tick(){
+    for(int i=0;i<Queuesize_;i++){
+        qu.v[i].tick();
+    }
+    qu.l.tick(), qu.r.tick(), qu.cnt.tick();
+    Rbuf.tick();
+    Rbuf.next.valid = false;
+    flushed.tick();
+    flushed.next = false;
+    return;
+    // remember to tick the l,r,cnt!
+}
