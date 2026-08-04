@@ -7,12 +7,15 @@ void CDB::move(ROB &rob, bool &UseA, bool &UseB, bool &UseLS, uint_32 &IdA, uint
         Cbuf.next.valid = false;
         return;
     }
+    // FIX(Plan A): full round-robin - every cycle ANY valid source is served, in a rotating priority,
+    // so a cycle is never wasted on an empty unit's turn and the LSbuf can't monopolize the CDB.
     static int turn = 1;
     turn++;
     if(turn == 4){
         turn = 1;
     }
-    if(LSbuf.curr.valid && turn == 3){
+    auto tryLS = [&]() -> bool {
+        if(!LSbuf.curr.valid) return false;
         UseLS = true, IdLS = LSbuf.curr.submitted_id;
         last_id.next = LSbuf.curr.submitted_id, last_type.next = 3;
         uint_32 pos = LSbuf.curr.rob_tag;
@@ -21,7 +24,7 @@ void CDB::move(ROB &rob, bool &UseA, bool &UseB, bool &UseLS, uint_32 &IdA, uint
             pos = rob.Queuesize_;
         }
         if(rob.qu.v[pos].curr.done){
-            return;
+            return false;
         }
         rob.qu.v[pos].next.rob_tag = LSbuf.curr.rob_tag;
         rob.qu.v[pos].next.type = 3;
@@ -33,12 +36,10 @@ void CDB::move(ROB &rob, bool &UseA, bool &UseB, bool &UseLS, uint_32 &IdA, uint
         rob.qu.v[pos].next.mem_unsigned = LSbuf.curr.mem_unsigned;
         rob.qu.v[pos].next.mem_mask = LSbuf.curr.mem_mask;
         rob.qu.v[pos].next.done = true;
-        //if(LSbuf.curr.is_read){
-        //    Cbuf.next.valid = true;
-        //    Cbuf.next.rob_tag = LSbuf.curr.rob_tag, Cbuf.next.result = LSbuf.curr.load_result;
-        //}
-    }
-    else if(Bbuf.curr.valid && turn >= 2){
+        return true;
+    };
+    auto tryB = [&]() -> bool {
+        if(!Bbuf.curr.valid) return false;
         UseB = true, IdB = Bbuf.curr.submitted_id;
         last_id.next = Bbuf.curr.submitted_id, last_type.next = 2;
         uint_32 pos = Bbuf.curr.rob_tag;
@@ -47,15 +48,17 @@ void CDB::move(ROB &rob, bool &UseA, bool &UseB, bool &UseLS, uint_32 &IdA, uint
             pos = rob.Queuesize_;
         }
         if(rob.qu.v[pos].curr.done){
-            return;
+            return false;
         }
         rob.qu.v[pos].next.rob_tag = Bbuf.curr.rob_tag;
         rob.qu.v[pos].next.type = 2; // rd and value for jal and jalr is written before
         rob.qu.v[pos].next.actual_dest = Bbuf.curr.actual_dest;
         rob.qu.v[pos].next.branch_misjumped = Bbuf.curr.mispredicted;
         rob.qu.v[pos].next.done = true;
-    }
-    else if(Abuf.curr.valid){
+        return true;
+    };
+    auto tryA = [&]() -> bool {
+        if(!Abuf.curr.valid) return false;
         UseA = true, IdA = Abuf.curr.submitted_id;
         last_id.next = Abuf.curr.submitted_id, last_type.next = 1;
         uint_32 pos = Abuf.curr.rob_tag;
@@ -64,14 +67,22 @@ void CDB::move(ROB &rob, bool &UseA, bool &UseB, bool &UseLS, uint_32 &IdA, uint
             pos = rob.Queuesize_;
         }
         if(rob.qu.v[pos].curr.done){
-            return;
+            return false;
         }
         rob.qu.v[pos].next.rob_tag = Abuf.curr.rob_tag;
         rob.qu.v[pos].next.type = 1;
         rob.qu.v[pos].next.value = Abuf.curr.alu_result;
         rob.qu.v[pos].next.done = true;
-        //Cbuf.next.valid = true;
-        //Cbuf.next.rob_tag = Abuf.curr.rob_tag, Cbuf.next.result = Abuf.curr.alu_result;
+        return true;
+    };
+    if(turn == 1){
+        tryA() || tryB() || tryLS();
+    }
+    else if(turn == 2){
+        tryB() || tryLS() || tryA();
+    }
+    else{
+        tryLS() || tryA() || tryB();
     }
     return;
 }
