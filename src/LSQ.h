@@ -2,28 +2,6 @@
 
 #include "utils.h"
 
-/*
-struct LoadEntry{
-    bool busy = false;
-    uint_32 rob_tag;
-    uint_32 vbase, qbase;
-    bool base_ready;
-    bool mem_unsigned;
-    uint_8 mem_mask;
-    uint_32 rd;
-    uint_32 imm;
-};
-struct StoreEntry{
-    bool busy = false;
-    uint_32 rob_tag;
-    uint_32 vbase, qbase, vdata, qdata;
-    bool base_ready, data_ready;
-    bool mem_unsigned;
-    uint_8 mem_mask;
-    uint_32 imm;
-    bool submitted;
-};
-*/
 void LSQ::move(LSQ_DMEM_Buffer &Dbuf, CDB_Broadcast_Buffer &Cbuf, const ROB_CommitStore_Buffer &Rbuf, bool &ISStall){
     if(flushed.curr){
         for(int i=1;i<=EntrySize_;i++){
@@ -72,7 +50,7 @@ void LSQ::move(LSQ_DMEM_Buffer &Dbuf, CDB_Broadcast_Buffer &Cbuf, const ROB_Comm
     }
     if(Rbuf.valid){
         assert(Rbuf.rob_tag == sq.front().rob_tag);
-        sq.pop(); // FIX: do NOT return here - the buf->queue push below must still happen (was: a store arriving on the same cycle as a store-commit signal got dropped)
+        sq.pop(); 
     }
     if(!stall.curr){
         if(lq.empty() && sq.empty()){
@@ -81,12 +59,12 @@ void LSQ::move(LSQ_DMEM_Buffer &Dbuf, CDB_Broadcast_Buffer &Cbuf, const ROB_Comm
         else{
             if(lq.empty() || (!lq.empty() && !sq.empty() && lq.front().rob_tag > sq.front().rob_tag)){
                 if(!sq.empty() && !sq.front().submitted && sq.front().base_ready && sq.front().data_ready){
-                    sq.v[sq.nxt(sq.l.curr)].next.submitted = true; // FIX: the front entry lives at v[nxt(l)], not v[l] (was: flag never set -> store re-dispatched every cycle -> DMEM flooded with duplicates)
+                    sq.v[sq.nxt(sq.l.curr)].next.submitted = true; 
                     Dbuf.valid = true;
                     Dbuf.rob_tag = sq.front().rob_tag;
                     Dbuf.mem_read = false, Dbuf.mem_write = true;
                     Dbuf.mem_unsigned = sq.front().mem_unsigned, Dbuf.mem_mask = sq.front().mem_mask;
-                    Dbuf.goal_addr = sq.front().vbase + sq.front().imm; // Need an adder
+                    Dbuf.goal_addr = sq.front().vbase + sq.front().imm; 
                     Dbuf.write_data = sq.front().vdata;
                 }
             }
@@ -97,7 +75,7 @@ void LSQ::move(LSQ_DMEM_Buffer &Dbuf, CDB_Broadcast_Buffer &Cbuf, const ROB_Comm
                     Dbuf.rd = lq.front().rd;
                     Dbuf.mem_read = true, Dbuf.mem_write = false;
                     Dbuf.mem_unsigned = lq.front().mem_unsigned, Dbuf.mem_mask = lq.front().mem_mask;
-                    Dbuf.goal_addr = lq.front().vbase + lq.front().imm; // Need an adder
+                    Dbuf.goal_addr = lq.front().vbase + lq.front().imm; 
                     lq.pop();
                 }
             }

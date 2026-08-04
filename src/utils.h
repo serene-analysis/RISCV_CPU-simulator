@@ -15,28 +15,23 @@ typedef unsigned int uint_32;
 const static bool logout = false;
 
 struct Instruction{
-    // 1. 寄存器写使能
-    bool reg_write_en;   // RegWEn: 是否要将计算结果写入目标寄存器 rd
+    
+    bool reg_write_en;   
 
-    // 2. ALU 源操作数选择 (用于决定 ALU 输入来自哪里)
-    bool alu_src_a;      // ASel: 0 = RegReadData1 (来自 rs1/RS), 1 = PC
-    bool alu_src_b;      // BSel: 0 = RegReadData2 (来自 rs2/RS), 1 = Imm (来自 imm)
+    bool alu_src_a;      
+    bool alu_src_b;      
 
-    // 3. ALU 功能选择码
-    uint_8 alu_sel;     // ALUSel: 告诉 ALU 执行具体的算术/逻辑运算
+    uint_8 alu_sel;     
 
-    // 4. 内存 (DMEM) 访问控制
-    bool mem_read;       // MemRead: 是否读内存 (Load 指令)
-    bool mem_write;      // MemWrite: 是否写内存 (Store 指令)
-    uint_8 mem_mask;    // 访存字节控制: 0 = 1 Byte (b), 1 = 2 Bytes (h), 2 = 4 Bytes (w)
-    bool mem_unsigned;   // 访存符号控制: true = 无符号扩展 (lbu/lhu), false = 有符号扩展 (lb/lh)
+    bool mem_read;       
+    bool mem_write;      
+    uint_8 mem_mask;    
+    bool mem_unsigned;   
 
-    // 5. 写回数据源选择 (WBSel)
-    uint_8 wb_sel;      // 0 = ALU 结果, 1 = 内存读取值 (Mem), 2 = PC + 4 (用于 JAL/JALR 存返回地址)
+    uint_8 wb_sel;      
 
-    // 6. 分支与跳转控制
-    bool is_branch;      // 是否为条件分支指令 (BEQ, BNE, BLT 等)
-    bool is_jump;        // 是否为无条件跳转指令 (JAL, JALR)
+    bool is_branch;      
+    bool is_jump;        
     uint_8 funct3;
 
     uint_32 rs2, rs1, rd, imm;
@@ -119,7 +114,6 @@ struct Decoder{
 struct DMEM;
 struct RegFile;
 
-
 struct IS_ArithRS_Buffer;
 struct IS_BranchRS_Buffer;
 struct IS_LSQ_Buffer;
@@ -172,12 +166,12 @@ struct RAT{
 struct ROBEntry{
     bool busy = false;
     uint_32 rob_tag;
-    uint_8 type; // 1: Arithmetic, 2: Branch, 3: Memory
+    uint_8 type; 
     uint_8 rd;
     uint_32 value;
     bool predicted_jump, branch_misjumped;
     uint_32 actual_dest;
-    bool done; // can be commited or not
+    bool done; 
     uint_32 write_addr;
     bool is_read;
     uint_8 remaining_round;
@@ -210,7 +204,7 @@ struct ALU{
     const static int Memsize_ = 8;
     Unit<ArithRS_ALU_Buffer> buf;
     Unit<ALU_CDB_Buffer> mem[Memsize_];
-    uint_32 sent_tag[Memsize_]; // FIX: rob_tag of the entry last sent from each slot, for acceptance identity check
+    uint_32 sent_tag[Memsize_]; 
     Unit<uint_32> submitted_id;
     Unit<bool> accepted, flushed;
     void move(ALU_CDB_Buffer &Cbuf, bool &ArithRSStall);
@@ -240,7 +234,7 @@ struct BU{
     const static int Memsize_ = 8;
     Unit<BranchRS_BU_Buffer> buf;
     Unit<BU_CDB_Buffer> mem[Memsize_];
-    uint_32 sent_tag[Memsize_]; // FIX: rob_tag of the entry last sent from each slot, for acceptance identity check
+    uint_32 sent_tag[Memsize_]; 
     Unit<uint_32> submitted_id;
     Unit<bool> accepted, flushed;
     void move(BU_CDB_Buffer &Cbuf, bool &BranchRSStall);
@@ -307,7 +301,6 @@ struct BranchRS{
     void flush();
     void tick();
 };
-
 
 struct IS_LSQ_Buffer{
     bool valid = false;
@@ -397,85 +390,51 @@ enum ALUType{ ALU_add, ALU_sub, ALU_and, ALU_or, ALU_xor, ALU_sll, ALU_srl, ALU_
 
 uint_32 ADD(uint_32 now, uint_32 oth){
     uint_32 ret = 0;
-    /*bool carry = false;
-    for(int i=0;i<32;i++){
-        bool lv = (now >> i) & 1, rv = (oth >> i) & 1;
-        bool got = (lv & carry) | (rv & carry) | (lv & rv);
-        ret |= (lv ^ rv ^ carry) << i;
-        carry = got;
-    }*/
+    
     ret = now + oth;
     return ret;
 }
 
 uint_32 SUB(uint_32 now, uint_32 oth){
-    /*for(int i=0;i<32;i++){
-        oth ^= (1u << i);
-    }
-    oth = ADD(oth, 1);
-    return ADD(now, oth);*/
+    
     return now - oth;
 }
 
 uint_32 AND(uint_32 now, uint_32 oth){
     uint_32 ret = 0;
-    /*for(int i=0;i<32;i++){
-        ret |= (((now >> i) & 1) & ((oth >> i) & 1)) << i;
-    }*/
+    
     ret = now & oth;
     return ret;
 }
 
 uint_32 OR(uint_32 now, uint_32 oth){
     uint_32 ret = 0;
-    /*for(int i=0;i<32;i++){
-        ret |= (((now >> i) & 1) | ((oth >> i) & 1)) << i;
-    }*/
+    
     ret = now | oth;    
     return ret;
 }
 
 uint_32 XOR(uint_32 now, uint_32 oth){
     uint_32 ret = 0;
-    /*for(int i=0;i<32;i++){
-        ret |= (((now >> i) & 1) ^ ((oth >> i) & 1)) << i;
-    }*/
+    
     ret = now ^ oth;
     return ret;
 }
 
 uint_32 MUX(uint_32 v0, uint_32 v1, bool type){
-    /*if(type == 1){
-        logout && fprintf(stderr, "MUX: %u, %u, %d\n", v0, v1, type);
-    }*/
-    /*uint_32 lv = !type, rv = type;
-    for(int i=1;i<32;i++){
-        lv |= ((lv & 1) << i), rv |= ((rv & 1) << i);
-    }
-    return OR(AND(lv, v0), AND(rv, v1));*/
+
     return type ? v1 : v0;
 }
 
 bool ISZERO(uint_32 now){
-    /*uint_32 ret = 1;
-    for(int i=0;i<32;i++){
-        bool nv = (now >> i) & 1;
-        ret &= !(nv & nv);
-    }
-    return ret;*/
+    
     return now == 0;
 }
 
 uint_32 SLL(uint_32 now, uint_32 oth){
     oth &= 31;
     uint_32 ret = 0;
-    /*for(uint_32 d=0;d<32;d++){
-        bool equ = ISZERO(SUB(oth, d));
-        for(int i=d;i<32;i++){
-            uint_32 nv = MUX(0, (now >> (i - d)) & 1, equ);
-            ret |= (nv << i);
-        }
-    }*/
+    
     ret = now << oth;
     return ret;
 }
@@ -483,13 +442,7 @@ uint_32 SLL(uint_32 now, uint_32 oth){
 uint_32 SRL(uint_32 now, uint_32 oth){
     oth &= 31;
     uint_32 ret = 0;
-    /*for(uint_32 d=0;d<32;d++){
-        bool equ = ISZERO(SUB(oth, d));
-        for(int i=0;i<32-d;i++){
-            uint_32 nv = MUX(0, (now >> (i + d)) & 1, equ);
-            ret |= (nv << i);
-        }
-    }*/
+    
     ret = now >> oth;
     return ret;
 }
@@ -497,42 +450,18 @@ uint_32 SRL(uint_32 now, uint_32 oth){
 uint_32 SRA(uint_32 now, uint_32 oth){
     oth &= 31;
     uint_32 ret = 0;
-    /*for(uint_32 d=0;d<32;d++){
-        bool equ = ISZERO(SUB(oth, d));
-        for(int i=0;i<32-d;i++){
-            uint_32 nv = MUX(0, (now >> (i + d)) & 1, equ);
-            ret |= (nv << i);
-        }
-        for(int i=32-d;i<32;i++){
-            uint_32 nv = MUX(0, (now >> 31) & 1, equ);
-            ret |= (nv << i);
-        }
-    }*/
+    
     ret = static_cast<uint_32>(static_cast<int_32>(now) >> oth);
     return ret;
 }
 
-bool SLTU(uint_32 now, uint_32 oth){ // (now < oth), unsigned
-    /*bool yes = false, no = false;
-    for(int i=31;i>=0;i--){
-        bool lv = (now >> i) & 1, rv = (oth >> i) & 1;
-        yes = yes | ((!no) & (lv != rv) & ISZERO(lv));
-        no = no | ((!yes) & (lv != rv) & ISZERO(rv));
-    }
-    return yes;*/
+bool SLTU(uint_32 now, uint_32 oth){ 
+    
     return now < oth;
 }
 
 bool SLT(uint_32 now, uint_32 oth){
-    /*bool luv = ((now >> 31) & 1), ruv = ((oth >> 31) & 1);
-    bool dif = (luv != ruv);
-    bool yes = MUX(false, ISZERO(ruv), dif), no = MUX(false, ISZERO(luv), dif), rev = (!dif) & (!ISZERO(luv));
-    for(int i=31;i>=0;i--){
-        bool lv = (now >> i) & 1, rv = (oth >> i) & 1;
-        yes = yes | ((!no) & (lv != rv) & ISZERO(lv));
-        no = no | ((!yes) & (lv != rv) & ISZERO(rv));
-    }
-    return MUX(yes, !yes, rev);// can't put no because when now == oth, no == false*/
+    
     return static_cast<int_32>(now) < static_cast<int_32>(oth);
 }
 

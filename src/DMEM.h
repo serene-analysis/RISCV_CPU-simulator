@@ -11,7 +11,7 @@ struct DMEM{
     uint_32 dirty_cnt = 0;
     Unit<LSQ_DMEM_Buffer> buf;
     Unit<DMEMEntry> mem[Memsize_];
-    uint_32 sent_tag[Memsize_]; // FIX: rob_tag of the entry last sent from each slot, for acceptance identity check
+    uint_32 sent_tag[Memsize_]; 
     Unit<uint_32> submitted_id;
     Unit<bool> accepted, flushed;
     void move(DMEM_CDB_Buffer &Cbuf, bool &LSQStall){
@@ -22,14 +22,14 @@ struct DMEM{
             return;
         }
         uint_32 got = 0, epos = Memsize_, bpos = Memsize_;
-        if(accepted.curr && mem[submitted_id.curr].curr.rob_tag == sent_tag[submitted_id.curr]){ // FIX: only clear the slot if it still holds the entry we actually sent
+        if(accepted.curr && mem[submitted_id.curr].curr.rob_tag == sent_tag[submitted_id.curr]){ 
             mem[submitted_id.curr].curr.valid = false;
             mem[submitted_id.curr].next.valid = false;
         }
         for(int i=0;i<Memsize_;i++){
             if(mem[i].curr.valid){
                 got++;
-                if(bpos == Memsize_ || mem[i].curr.rob_tag < mem[bpos].curr.rob_tag){ // FIX: always send the OLDEST pending entry (smallest rob_tag)
+                if(bpos == Memsize_ || mem[i].curr.rob_tag < mem[bpos].curr.rob_tag){ 
                     bpos = i;
                 }
             }
@@ -58,7 +58,7 @@ struct DMEM{
                         mem[bpos].curr.mem_unsigned, mem[bpos].curr.mem_mask, mem[bpos].curr.write_addr, Cbuf.load_result);
                     Cbuf.rd = mem[bpos].curr.rd;
                     Cbuf.submitted_id = bpos;
-                    sent_tag[bpos] = mem[bpos].curr.rob_tag; // FIX: remember which entry we sent from this slot
+                    sent_tag[bpos] = mem[bpos].curr.rob_tag; 
                 }
             }
             else{
@@ -67,7 +67,7 @@ struct DMEM{
                 Cbuf.is_read = false;
                 Cbuf.write_addr = mem[bpos].curr.write_addr, Cbuf.write_data = mem[bpos].curr.write_data;
                 Cbuf.submitted_id = bpos;
-                sent_tag[bpos] = mem[bpos].curr.rob_tag; // FIX: remember which entry we sent from this slot
+                sent_tag[bpos] = mem[bpos].curr.rob_tag; 
                 Cbuf.mem_unsigned = mem[bpos].curr.mem_unsigned, Cbuf.mem_mask = mem[bpos].curr.mem_mask;
             }
         }

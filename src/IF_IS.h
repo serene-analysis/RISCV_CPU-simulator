@@ -4,41 +4,6 @@
 #include "decoder.h"
 #include "RegFile.h"
 
-/*
-struct IF_IS_Buffer{
-    bool valid = false;
-    uint_32 inst;
-    uint_32 PC;
-};
-struct IS_ArithRS_Buffer{
-    bool valid = false;
-    uint_32 rob_tag;
-    uint_32 vj, qj, vk, qk;
-    bool alu_src_a, alu_src_b;
-    uint_8 alu_sel;
-    uint_32 imm, PC;
-};
-struct IS_BranchRS_Buffer{
-    bool valid = false;
-    uint_32 rob_tag;
-    uint_32 vj, qj, vk, qk;
-    uint_8 funct3;
-    bool is_jump, is_jalr;
-    bool predicted_jump;
-    uint_32 nojump_dest, jump_dest;
-    uint_32 imm, PC;
-};
-struct IS_LSQ_Buffer{
-    bool valid = false;
-    uint_32 rob_tag;
-    uint_32 vj, qj, vk, qk;
-    bool mem_read, mem_write, mem_unsigned;
-    uint_8 mem_mask;
-    uint_32 rd;
-    uint_32 PC, imm;
-};
-*/
-
 void IF_IS::update_bht(const uint_32 &pc, const bool &taken){
     uint_32 idx = (pc >> 2) & 255;
     uint_8 cnt = bht[idx];
@@ -62,9 +27,9 @@ void IF_IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffe
         PC.next = PC.curr;
     }
     else{
-        //fprintf(stderr, "PC.curr = %u\n", PC.curr);
+        
         uint_32 inst = conv.fetch_instruction(PC.curr);
-        PC.next = PC.curr + 4; // Need an adder
+        PC.next = PC.curr + 4; 
         bvalid = (inst != 0);
         binst = inst;
         bPC = PC.curr;
@@ -127,7 +92,7 @@ void IF_IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffe
             Bbuf.is_jalr = (inst.is_jump && inst.alu_src_a == 0);
             Bbuf.funct3 = inst.funct3;
             Bbuf.predicted_jump = false;
-            if(inst.is_jump && inst.alu_src_a == 1){ // jal
+            if(inst.is_jump && inst.alu_src_a == 1){ 
                 uint_32 ntag = 0, nqj = 0, nqk = 0;
                 rob.allocate(1, inst.rd, bPC, false, 0, 0, ROBstall.next, ntag), Bbuf.rob_tag = ntag;
                 if(binst == 0x0ff00513){
@@ -140,9 +105,9 @@ void IF_IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffe
                 Bbuf.jump_dest = bPC + inst.imm;
                 Bbuf.PC = bPC;
                 Bbuf.predicted_jump = true;
-                PC.next = bPC + inst.imm; // Need an adder
+                PC.next = bPC + inst.imm; 
             }
-            else if(inst.is_jump){ // jalr
+            else if(inst.is_jump){ 
                 uint_32 ntag = 0, nqj = 0, nqk = 0;
                 rob.allocate(1, inst.rd, bPC, false, 0, 0, ROBstall.next, ntag), Bbuf.rob_tag = ntag;
                 if(binst == 0x0ff00513){
@@ -161,7 +126,7 @@ void IF_IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffe
                 Bbuf.PC = bPC;
                 if(!nqj){
                     Bbuf.predicted_jump = true;
-                    PC.next = memvj + inst.imm; // Need an adder
+                    PC.next = memvj + inst.imm; 
                 }
             }
             else{

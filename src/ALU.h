@@ -1,9 +1,6 @@
 #pragma once
 
 #include "utils.h"
-/*enum ALUType{ ALU_add, ALU_sub, ALU_and, ALU_or, ALU_xor, ALU_sll, ALU_srl, ALU_sra,
-    ALU_slt, ALU_sltu, ALU_addi, ALU_andi, ALU_ori, ALU_xori, ALU_slli, ALU_srli, ALU_srai,
-    ALU_slti, ALU_sltiu, ALU_passb};*/
 
 void ALU::move(ALU_CDB_Buffer &Cbuf, bool &ArithRSStall){
     if(flushed.curr){
@@ -13,13 +10,13 @@ void ALU::move(ALU_CDB_Buffer &Cbuf, bool &ArithRSStall){
         return;
     }
     uint_32 got = 0, epos = Memsize_, bpos = Memsize_;
-    if(accepted.curr && mem[submitted_id.curr].curr.rob_tag == sent_tag[submitted_id.curr]){ // FIX: only clear the slot if it still holds the entry we actually sent (a newer result may have reused the slot)
+    if(accepted.curr && mem[submitted_id.curr].curr.rob_tag == sent_tag[submitted_id.curr]){ 
         mem[submitted_id.curr].curr.valid = false;
         mem[submitted_id.curr].next.valid = false;
     }
     for(int i=0;i<Memsize_;i++){
         if(mem[i].curr.valid){
-            if(bpos == Memsize_ || mem[i].curr.rob_tag < mem[bpos].curr.rob_tag){ // FIX: always send the OLDEST pending entry (smallest rob_tag), so a pending broadcast is re-sent until accepted and never overwritten by a newer send
+            if(bpos == Memsize_ || mem[i].curr.rob_tag < mem[bpos].curr.rob_tag){ 
                 bpos = i;
             }
             got++;
@@ -51,13 +48,13 @@ void ALU::move(ALU_CDB_Buffer &Cbuf, bool &ArithRSStall){
         mem[epos].next.alu_result = ret;
     }
     if(bpos != Memsize_){
-        sent_tag[bpos] = mem[bpos].curr.rob_tag; // FIX: remember which entry we sent from this slot
+        sent_tag[bpos] = mem[bpos].curr.rob_tag; 
         Cbuf.valid = true;
         Cbuf.rob_tag = mem[bpos].curr.rob_tag;
         Cbuf.alu_result = mem[bpos].curr.alu_result;
         Cbuf.submitted_id = bpos;
     }
-    //logout && fprintf(stderr, "ret = %u\n", ret);
+    
     return;
 }
 void ALU::flush(){

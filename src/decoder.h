@@ -2,7 +2,6 @@
 
 #include "utils.h"
 
-
 Instruction Decoder::decode(uint_32 inst){
     uint_32 opcode = inst & 127, rd = (inst >> 7) & 31,
         funct3 = (inst >> 12) & 7, rs1 = (inst >> 15) & 31,
@@ -26,7 +25,7 @@ Instruction Decoder::decode(uint_32 inst){
     Instruction ret;
     ret.rs2 = rs2, ret.rs1 = rs1, ret.rd = rd, ret.imm = imm;
     switch(opcode){
-        case 51:{ // R
+        case 51:{ 
             logout && fprintf(stderr, "type R\n");
             ret.reg_write_en = true;
             ret.alu_src_a = 0;
@@ -44,7 +43,7 @@ Instruction Decoder::decode(uint_32 inst){
             }
             break;
         }
-        case 19:{ // I/I* arithmetic
+        case 19:{ 
             logout && fprintf(stderr, "type I arithmetic\n");
             ret.reg_write_en = true;
             ret.alu_src_a = 0;
@@ -62,7 +61,7 @@ Instruction Decoder::decode(uint_32 inst){
             }
             break;
         }
-        case 3:{ // I load
+        case 3:{ 
             logout && fprintf(stderr, "type I load\n");
             ret.reg_write_en = true;
             ret.alu_src_a = 0;
@@ -74,7 +73,7 @@ Instruction Decoder::decode(uint_32 inst){
             ret.mem_unsigned = (funct7 & 4);
             break;
         }
-        case 35:{ // S
+        case 35:{ 
             logout && fprintf(stderr, "type S\n");
             ret.reg_write_en = false;
             ret.alu_src_a = 0;
@@ -85,7 +84,7 @@ Instruction Decoder::decode(uint_32 inst){
             ret.mem_mask = funct3 & 3;
             break;
         }
-        case 99:{ // B
+        case 99:{ 
             logout && fprintf(stderr, "type B, funct3 = %u\n", uint_32(funct3));
             ret.reg_write_en = false;
             ret.is_branch = true;
@@ -95,7 +94,7 @@ Instruction Decoder::decode(uint_32 inst){
             ret.funct3 = funct3;
             break;
         }
-        case 111:{ // Jal
+        case 111:{ 
             logout && fprintf(stderr, "type Jal\n");
             ret.reg_write_en = true;
             ret.is_jump = true;
@@ -105,7 +104,7 @@ Instruction Decoder::decode(uint_32 inst){
             ret.wb_sel = 2;
             break;
         }
-        case 103:{ // Jalr
+        case 103:{ 
             logout && fprintf(stderr, "type Jalr\n");
             ret.reg_write_en = true;
             ret.is_jump = true;
@@ -115,7 +114,7 @@ Instruction Decoder::decode(uint_32 inst){
             ret.wb_sel = 2;
             break;
         }
-        case 23:{ // U add
+        case 23:{ 
             logout && fprintf(stderr, "type U add\n");
             ret.reg_write_en = true;
             ret.alu_src_a = 1;
@@ -124,7 +123,7 @@ Instruction Decoder::decode(uint_32 inst){
             ret.wb_sel = 0;
             break;
         }
-        case 55:{ // U load
+        case 55:{ 
             logout && fprintf(stderr, "type U load\n");
             ret.reg_write_en = true;
             ret.alu_src_b = 1;
@@ -132,13 +131,13 @@ Instruction Decoder::decode(uint_32 inst){
             ret.wb_sel = 0;
             break;
         }
-        case 115:{ // I environment
+        case 115:{ 
             logout && fprintf(stderr, "type I environment\n");
             break;
         }
         default:{
             fflush(stderr);
-            //throw false;
+            
         }
     }
     return ret;

@@ -7,8 +7,7 @@ void CDB::move(ROB &rob, bool &UseA, bool &UseB, bool &UseLS, uint_32 &IdA, uint
         Cbuf.next.valid = false;
         return;
     }
-    // FIX(Plan A): full round-robin - every cycle ANY valid source is served, in a rotating priority,
-    // so a cycle is never wasted on an empty unit's turn and the LSbuf can't monopolize the CDB.
+
     static int turn = 1;
     turn++;
     if(turn == 4){
@@ -19,7 +18,7 @@ void CDB::move(ROB &rob, bool &UseA, bool &UseB, bool &UseLS, uint_32 &IdA, uint
         UseLS = true, IdLS = LSbuf.curr.submitted_id;
         last_id.next = LSbuf.curr.submitted_id, last_type.next = 3;
         uint_32 pos = LSbuf.curr.rob_tag;
-        pos &= (rob.Queuesize_ - 1); // come from Queue size
+        pos &= (rob.Queuesize_ - 1); 
         if(pos == 0){
             pos = rob.Queuesize_;
         }
@@ -43,7 +42,7 @@ void CDB::move(ROB &rob, bool &UseA, bool &UseB, bool &UseLS, uint_32 &IdA, uint
         UseB = true, IdB = Bbuf.curr.submitted_id;
         last_id.next = Bbuf.curr.submitted_id, last_type.next = 2;
         uint_32 pos = Bbuf.curr.rob_tag;
-        pos &= (rob.Queuesize_ - 1); // come from Queue size
+        pos &= (rob.Queuesize_ - 1); 
         if(pos == 0){
             pos = rob.Queuesize_;
         }
@@ -51,7 +50,7 @@ void CDB::move(ROB &rob, bool &UseA, bool &UseB, bool &UseLS, uint_32 &IdA, uint
             return false;
         }
         rob.qu.v[pos].next.rob_tag = Bbuf.curr.rob_tag;
-        rob.qu.v[pos].next.type = 2; // rd and value for jal and jalr is written before
+        rob.qu.v[pos].next.type = 2; 
         rob.qu.v[pos].next.actual_dest = Bbuf.curr.actual_dest;
         rob.qu.v[pos].next.branch_misjumped = Bbuf.curr.mispredicted;
         rob.qu.v[pos].next.done = true;
@@ -62,7 +61,7 @@ void CDB::move(ROB &rob, bool &UseA, bool &UseB, bool &UseLS, uint_32 &IdA, uint
         UseA = true, IdA = Abuf.curr.submitted_id;
         last_id.next = Abuf.curr.submitted_id, last_type.next = 1;
         uint_32 pos = Abuf.curr.rob_tag;
-        pos &= (rob.Queuesize_ - 1); // come from Queue size
+        pos &= (rob.Queuesize_ - 1); 
         if(pos == 0){
             pos = rob.Queuesize_;
         }
@@ -92,7 +91,7 @@ void CDB::flush(){
 }
 void CDB::tick(){
     Abuf.tick(), Bbuf.tick(), LSbuf.tick(), Cbuf.tick();
-    Abuf.next.valid = false, Bbuf.next.valid = false, LSbuf.next.valid = false; // Don't clear the broadcast, it should last
+    Abuf.next.valid = false, Bbuf.next.valid = false, LSbuf.next.valid = false; 
     last_id.tick(), last_type.tick(), flushed.tick();
     last_id.next = last_type.next = 0;
     flushed.next = false;

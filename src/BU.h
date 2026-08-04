@@ -10,13 +10,13 @@ void BU::move(BU_CDB_Buffer &Cbuf, bool &BranchRSStall){
         return;
     }
     uint_32 got = 0, epos = Memsize_, bpos = Memsize_;
-    if(accepted.curr && mem[submitted_id.curr].curr.rob_tag == sent_tag[submitted_id.curr]){ // FIX: only clear the slot if it still holds the entry we actually sent
+    if(accepted.curr && mem[submitted_id.curr].curr.rob_tag == sent_tag[submitted_id.curr]){ 
         mem[submitted_id.curr].curr.valid = false;
         mem[submitted_id.curr].next.valid = false;
     }
     for(int i=0;i<Memsize_;i++){
         if(mem[i].curr.valid){
-            if(bpos == Memsize_ || mem[i].curr.rob_tag < mem[bpos].curr.rob_tag){ // FIX: always send the OLDEST pending entry (smallest rob_tag)
+            if(bpos == Memsize_ || mem[i].curr.rob_tag < mem[bpos].curr.rob_tag){ 
                 bpos = i;
             }
             got++;
@@ -46,7 +46,7 @@ void BU::move(BU_CDB_Buffer &Cbuf, bool &BranchRSStall){
                 }
             }
         }
-        uint_32 cleared = (buf.curr.jump_dest >> 1) << 1; // Jal
+        uint_32 cleared = (buf.curr.jump_dest >> 1) << 1; 
         mem[epos].next.valid = true;
         mem[epos].next.rob_tag = buf.curr.rob_tag;
         mem[epos].next.mispredicted = (buf.curr.predicted_jump != (condition_met || buf.curr.is_jump));
@@ -58,7 +58,7 @@ void BU::move(BU_CDB_Buffer &Cbuf, bool &BranchRSStall){
         }
     }
     if(bpos != Memsize_){
-        sent_tag[bpos] = mem[bpos].curr.rob_tag; // FIX: remember which entry we sent from this slot
+        sent_tag[bpos] = mem[bpos].curr.rob_tag; 
         Cbuf.valid = true;
         Cbuf.rob_tag = mem[bpos].curr.rob_tag;
         Cbuf.actual_dest = mem[bpos].curr.actual_dest;

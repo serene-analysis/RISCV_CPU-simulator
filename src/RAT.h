@@ -15,8 +15,10 @@ void RAT::mark(const uint_8 &pos, const uint_32 &value){
 }
 void RAT::unlock(const uint_8 &pos, const uint_32 &value){
     if(ent[pos].curr.rob_tag == value){
-        ent[pos].next.busy = false;
-        ent[pos].next.rob_tag = 0;
+        if(ent[pos].next.rob_tag == value || ent[pos].next.rob_tag == 0){
+            ent[pos].next.busy = false;
+            ent[pos].next.rob_tag = 0;
+        }
     }
     return;
 }

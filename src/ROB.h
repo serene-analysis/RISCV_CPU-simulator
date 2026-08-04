@@ -4,25 +4,12 @@
 #include "DMEM.h"
 #include "RegFile.h"
 
-/*
-struct ROBEntry{
-    bool busy = false;
-    uint_8 type; // 1: Arithmetic, 2: Branch, 3: Memory
-    uint_8 rd;
-    uint_32 value;
-    bool ready;
-    bool predicted_jump, branch_misjumped;
-    uint_32 nojump_dest, jump_dest;
-    bool done; // can be commited or not
-};
-*/
-
 void ROB::allocate(const uint_8 &type, const uint_8 &rd, const uint_32 PC, const bool &predicted_jump,
     const uint_32 &nojump_dest, const uint_32 &jump_dest, bool &ISStall, uint_32 &ret){
     if(qu.nearly_full()){
         ISStall = true;
     }
-    qu.push((ROBEntry){true, uint_32(qu.cnt.curr) + 1, type, rd, PC + 4, predicted_jump, false, 0, false, 0, false, 0, false, 0}); // Need an adder
+    qu.push((ROBEntry){true, uint_32(qu.cnt.curr) + 1, type, rd, PC + 4, predicted_jump, false, 0, false, 0, false, 0, false, 0}); 
     ret = qu.cnt.curr + 1;
     return;
 }
@@ -36,7 +23,7 @@ void ROB::move(IF_IS &If_is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU
     }
     ROBEntry fir = qu.front();
     if(fir.done){
-        //fprintf(stderr, "fir.type = %u\n", fir.type);
+        
         if(fir.rob_tag == end_tag){
             ended = true;
             printf("%u\n", Regfile.reg[10].curr & 255u);
@@ -57,13 +44,13 @@ void ROB::move(IF_IS &If_is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU
             Cdb.Cbuf.next.result = fir.value;
             Cdb.Cbuf.next.rob_tag = fir.rob_tag;
             if(fir.branch_misjumped){
-                //fprintf(stderr, "misjumped\n");
+                
                 If_is.flush(), Ars.flush(), Brs.flush(), Lsq.flush(), Alu.flush(), Bu.flush(), Dmem.flush(), Cdb.flush(), Rat.flush(), flush();
                 If_is.redirected.next = true;
                 If_is.redirected_PC.next = fir.actual_dest;
             }
             else{
-                //fprintf(stderr, "not misjumped\n");
+                
             }
             If_is.update_bht(fir.value - 4, (fir.actual_dest != fir.value));
             branches++, branch_mispred += fir.branch_misjumped;
@@ -88,7 +75,7 @@ void ROB::move(IF_IS &If_is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU
                     Rbuf.next.valid = true;
                     Rbuf.next.rob_tag = fir.rob_tag;
                     qu.pop(), committed++;
-                    //Lsq.sq.pop(); // LSQ will deal with that
+                    
                 }
             }
         }
@@ -111,5 +98,5 @@ void ROB::tick(){
     flushed.tick();
     flushed.next = false;
     return;
-    // remember to tick the l,r,cnt!
+    
 }
