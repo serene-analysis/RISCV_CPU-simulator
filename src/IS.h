@@ -39,11 +39,26 @@ struct IS_LSQ_Buffer{
 };
 */
 
-void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &LSbuf,
-    RAT &rat, RegFile &regfile, ROB &rob, bool &IFStall, bool &Foretold, uint_32 &Foretold_PC, uint_32 &end_tag){
+void IF_IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &LSbuf, RAT &rat, RegFile &regfile, ROB &rob, uint_32 &end_tag){
+    bool bvalid = false;
+    uint_32 binst = 0, bPC = 0;
+    if(redirected.curr){
+        PC.next = redirected_PC.curr;
+    }
+    else if(RSstall.curr || ROBstall.curr){
+        PC.next = PC.curr;
+    }
+    else{
+        uint_32 inst = conv.fetch_instruction(PC.curr);
+        PC.next = PC.curr + 4; // Need an adder
+        bvalid = (inst != 0);
+        binst = inst;
+        bPC = PC.curr;
+    }
+
     Abuf = IS_ArithRS_Buffer(), Bbuf = IS_BranchRS_Buffer(), LSbuf = IS_LSQ_Buffer();
     if(flushed.curr){
-        buf.next.valid = false;
+        bvalid = false;
         assert(rat.flushed.curr);
         for(int i=0;i<rat.EntrySize_;i++){
             rat.ent[i].next.busy = false;
@@ -52,22 +67,21 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
         return;
     }
     if(RSstall.curr || ROBstall.curr){
-        IFStall = true;
         if(rob.qu.nearly_full()){
             ROBstall.next = true;
         }
     }
-    if(buf.curr.valid){
-        Instruction inst = dec.decode(buf.curr.inst);
+    if(bvalid){
+        Instruction inst = dec.decode(binst);
         if(inst.mem_read || inst.mem_write){
             LSbuf.valid = true;
             LSbuf.mem_read = inst.mem_read, LSbuf.mem_write = inst.mem_write;
             LSbuf.mem_unsigned = inst.mem_unsigned, LSbuf.mem_mask = inst.mem_mask;
-            LSbuf.PC = buf.curr.PC, LSbuf.imm = inst.imm, LSbuf.rd = inst.rd;
+            LSbuf.PC = bPC, LSbuf.imm = inst.imm, LSbuf.rd = inst.rd;
             if(inst.mem_read){
                 uint_32 ntag = 0, nqj = 0, nqk = 0;
-                rob.allocate(1, inst.rd, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), LSbuf.rob_tag = ntag;
-                if(buf.curr.inst == 0x0ff00513){
+                rob.allocate(1, inst.rd, bPC, false, 0, 0, ROBstall.next, ntag), LSbuf.rob_tag = ntag;
+                if(binst == 0x0ff00513){
                     end_tag = ntag;
                 }
                 rat.query(inst.rs1, nqj), LSbuf.qj = nqj;
@@ -80,8 +94,8 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
             else{
                 assert(inst.mem_write);
                 uint_32 ntag = 0, nqj = 0, nqk = 0;
-                rob.allocate(1, inst.rd, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), LSbuf.rob_tag = ntag;
-                if(buf.curr.inst == 0x0ff00513){
+                rob.allocate(1, inst.rd, bPC, false, 0, 0, ROBstall.next, ntag), LSbuf.rob_tag = ntag;
+                if(binst == 0x0ff00513){
                     end_tag = ntag;
                 }
                 rat.query(inst.rs1, nqj), rat.query(inst.rs2, nqk), LSbuf.qj = nqj, LSbuf.qk = nqk;
@@ -101,21 +115,21 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
             Bbuf.predicted_jump = false;
             if(inst.is_jump && inst.alu_src_a == 1){ // jal
                 uint_32 ntag = 0, nqj = 0, nqk = 0;
-                rob.allocate(1, inst.rd, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), Bbuf.rob_tag = ntag;
-                if(buf.curr.inst == 0x0ff00513){
+                rob.allocate(1, inst.rd, bPC, false, 0, 0, ROBstall.next, ntag), Bbuf.rob_tag = ntag;
+                if(binst == 0x0ff00513){
                     end_tag = ntag;
                 }
-                Bbuf.vj = buf.curr.PC, Bbuf.vk = inst.imm;
+                Bbuf.vj = bPC, Bbuf.vk = inst.imm;
                 Bbuf.qj = Bbuf.qk = 0;
                 rat.mark(inst.rd, ntag);
-                Bbuf.nojump_dest = buf.curr.PC + 4;
-                Bbuf.jump_dest = buf.curr.PC + inst.imm;
-                Bbuf.PC = buf.curr.PC;
+                Bbuf.nojump_dest = bPC + 4;
+                Bbuf.jump_dest = bPC + inst.imm;
+                Bbuf.PC = bPC;
             }
             else if(inst.is_jump){ // jalr
                 uint_32 ntag = 0, nqj = 0, nqk = 0;
-                rob.allocate(1, inst.rd, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), Bbuf.rob_tag = ntag;
-                if(buf.curr.inst == 0x0ff00513){
+                rob.allocate(1, inst.rd, bPC, false, 0, 0, ROBstall.next, ntag), Bbuf.rob_tag = ntag;
+                if(binst == 0x0ff00513){
                     end_tag = ntag;
                 }
                 rat.query(inst.rs1, nqj), Bbuf.qj = nqj;
@@ -124,14 +138,14 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
                 }
                 Bbuf.vk = inst.imm, Bbuf.qk = 0;
                 rat.mark(inst.rd, ntag);
-                Bbuf.nojump_dest = buf.curr.PC + 4;
+                Bbuf.nojump_dest = bPC + 4;
                 Bbuf.jump_dest = 0;
-                Bbuf.PC = buf.curr.PC;
+                Bbuf.PC = bPC;
             }
             else{
                 uint_32 ntag = 0, nqj = 0, nqk = 0;
-                rob.allocate(1, 0, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), Bbuf.rob_tag = ntag;
-                if(buf.curr.inst == 0x0ff00513){
+                rob.allocate(1, 0, bPC, false, 0, 0, ROBstall.next, ntag), Bbuf.rob_tag = ntag;
+                if(binst == 0x0ff00513){
                     end_tag = ntag;
                 }
                 rat.query(inst.rs1, nqj), rat.query(inst.rs2, nqk), Bbuf.qj = nqj, Bbuf.qk = nqk;
@@ -141,19 +155,19 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
                 if(!nqk){
                     regfile.read(inst.rs2, Bbuf.vk);
                 }
-                Bbuf.nojump_dest = buf.curr.PC + 4;
-                Bbuf.jump_dest = buf.curr.PC + inst.imm;
-                Bbuf.PC = buf.curr.PC;
+                Bbuf.nojump_dest = bPC + 4;
+                Bbuf.jump_dest = bPC + inst.imm;
+                Bbuf.PC = bPC;
             }
         }
         else{
             Abuf.valid = true;
             Abuf.alu_sel = inst.alu_sel;
             Abuf.alu_src_a = inst.alu_src_a, Abuf.alu_src_b = inst.alu_src_b;
-            Abuf.imm = inst.imm, Abuf.PC = buf.curr.PC;
+            Abuf.imm = inst.imm, Abuf.PC = bPC;
             uint_32 ntag = 0, nqj = 0, nqk = 0;
-            rob.allocate(1, inst.rd, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), Abuf.rob_tag = ntag;
-            if(buf.curr.inst == 0x0ff00513){
+            rob.allocate(1, inst.rd, bPC, false, 0, 0, ROBstall.next, ntag), Abuf.rob_tag = ntag;
+            if(binst == 0x0ff00513){
                 end_tag = ntag;
             }
             if(inst.alu_src_a == 0){
@@ -167,7 +181,7 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
                     Abuf.vj = Abuf.qj = 0;
                 }
                 else{
-                    Abuf.vj = buf.curr.PC, Abuf.qj = 0;
+                    Abuf.vj = bPC, Abuf.qj = 0;
                 }
             }
             if(inst.alu_src_b == 0){
@@ -183,15 +197,13 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
         }
     }
 }
-void IS::flush(){
+void IF_IS::flush(){
     flushed.next = true;
     return;
 }
-void IS::tick(){
-    buf.tick();
-    //fprintf(stderr, "IS::buf.tick(), buf.valid = %d\n", buf.curr.valid);
-    buf.next.valid = false;
-    RSstall.tick(), ROBstall.tick(), flushed.tick();
-    RSstall.next = ROBstall.next = flushed.next = false;
+void IF_IS::tick(){
+    PC.tick(), redirected_PC.tick();
+    RSstall.tick(), ROBstall.tick(), flushed.tick(), redirected.tick();
+    RSstall.next = ROBstall.next = flushed.next = redirected.next = false;
     return;
 }

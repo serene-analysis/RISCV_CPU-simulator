@@ -26,7 +26,7 @@ void ROB::allocate(const uint_8 &type, const uint_8 &rd, const uint_32 PC, const
     ret = qu.cnt.curr + 1;
     return;
 }
-void ROB::move(IF &If, IS &Is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU &Bu, DMEM &Dmem, CDB &Cdb, RegFile &Regfile, RAT &Rat, bool &ended, uint_32 &end_tag){
+void ROB::move(IF_IS &If_is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU &Bu, DMEM &Dmem, CDB &Cdb, RegFile &Regfile, RAT &Rat, bool &ended, uint_32 &end_tag){
     if(flushed.curr){
         qu.l.next = qu.r.curr;
         return;
@@ -53,9 +53,9 @@ void ROB::move(IF &If, IS &Is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, 
             Regfile.write(fir.rd, fir.value);
             Rat.unlock(fir.rd, fir.rob_tag);
             if(fir.branch_misjumped){
-                If.flush(), Is.flush(), Ars.flush(), Brs.flush(), Lsq.flush(), Alu.flush(), Bu.flush(), Dmem.flush(), Cdb.flush(), Rat.flush(), flush();
-                If.redirected.next = true;
-                If.redirected_PC.next = fir.actual_dest;
+                If_is.flush(), Ars.flush(), Brs.flush(), Lsq.flush(), Alu.flush(), Bu.flush(), Dmem.flush(), Cdb.flush(), Rat.flush(), flush();
+                If_is.redirected.next = true;
+                If_is.redirected_PC.next = fir.actual_dest;
             }
             qu.pop();
         }

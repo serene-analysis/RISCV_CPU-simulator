@@ -119,33 +119,18 @@ struct Decoder{
 struct DMEM;
 struct RegFile;
 
-struct IF_IS_Buffer;
-struct IF{
-    Converter conv;
-    Unit<uint_32> PC, foretold_PC, redirected_PC;
-    Unit<bool> stall, foretold, redirected;
-    void move(IF_IS_Buffer &buf);
-    void flush();
-    void tick();
-};
-
-struct IF_IS_Buffer{
-    bool valid = false;
-    uint_32 inst;
-    uint_32 PC;
-};
 
 struct IS_ArithRS_Buffer;
 struct IS_BranchRS_Buffer;
 struct IS_LSQ_Buffer;
 struct RAT;
 struct ROB;
-struct IS{
+struct IF_IS{
+    Converter conv;
+    Unit<uint_32> PC, redirected_PC;
     Decoder dec;
-    Unit<IF_IS_Buffer> buf;
-    Unit<bool> RSstall, ROBstall, flushed;
-    void move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &LSbuf,
-        RAT &rat, RegFile &regfile, ROB &rob, bool &IFStall, bool &Foretold, uint_32 &Foretold_PC, uint_32 &end_tag);
+    Unit<bool> RSstall, ROBstall, flushed, redirected;
+    void move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &LSbuf, RAT &rat, RegFile &regfile, ROB &rob, uint_32 &end_tag);
     void flush();
     void tick();
 };
@@ -268,7 +253,7 @@ struct ROB{
     Unit<bool> flushed;
     void allocate(const uint_8 &type, const uint_8 &rd, const uint_32 PC, const bool &predicted_jump,
         const uint_32 &nojump_dest, const uint_32 &jump_dest, bool &ISStall, uint_32 &ret);
-    void move(IF &If, IS &Is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU &Bu,
+    void move(IF_IS &if_is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU &Bu,
         DMEM &Dmem, CDB &Cdb, RegFile &Rf, RAT &Rat, bool &ended, uint_32 &end_tag);
     void flush();
     void tick();
