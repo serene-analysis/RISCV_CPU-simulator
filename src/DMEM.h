@@ -27,7 +27,7 @@ struct DMEM{
                 got++;
                 bpos = i;
             }
-            else if(!accepted.curr || i != submitted_id.curr){
+            else{
                 epos = i;
             }
         }

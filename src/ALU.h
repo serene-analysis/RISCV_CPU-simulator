@@ -21,7 +21,7 @@ void ALU::move(ALU_CDB_Buffer &Cbuf, bool &ArithRSStall){
             bpos = i;
             got++;
         }
-        else if(!accepted.curr || i != submitted_id.curr){
+        else{
             epos = i;
         }
     }

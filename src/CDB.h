@@ -7,13 +7,16 @@ void CDB::move(ROB &rob, bool &UseA, bool &UseB, bool &UseLS, uint_32 &IdA, uint
         Cbuf.next.valid = false;
         return;
     }
-    if(LSbuf.curr.valid && (LSbuf.curr.submitted_id != last_id.curr || last_type.curr != 3)){
+    if(LSbuf.curr.valid){
         UseLS = true, IdLS = LSbuf.curr.submitted_id;
         last_id.next = LSbuf.curr.submitted_id, last_type.next = 3;
         uint_32 pos = LSbuf.curr.rob_tag;
         pos &= (rob.Queuesize_ - 1); // come from Queue size
         if(pos == 0){
             pos = rob.Queuesize_;
+        }
+        if(rob.qu.v[pos].curr.done){
+            return;
         }
         rob.qu.v[pos].next.rob_tag = LSbuf.curr.rob_tag;
         rob.qu.v[pos].next.type = 3;
@@ -30,7 +33,7 @@ void CDB::move(ROB &rob, bool &UseA, bool &UseB, bool &UseLS, uint_32 &IdA, uint
         //    Cbuf.next.rob_tag = LSbuf.curr.rob_tag, Cbuf.next.result = LSbuf.curr.load_result;
         //}
     }
-    else if(Bbuf.curr.valid && (Bbuf.curr.submitted_id != last_id.curr || last_type.curr != 2)){
+    else if(Bbuf.curr.valid){
         UseB = true, IdB = Bbuf.curr.submitted_id;
         last_id.next = Bbuf.curr.submitted_id, last_type.next = 2;
         uint_32 pos = Bbuf.curr.rob_tag;
@@ -38,19 +41,25 @@ void CDB::move(ROB &rob, bool &UseA, bool &UseB, bool &UseLS, uint_32 &IdA, uint
         if(pos == 0){
             pos = rob.Queuesize_;
         }
+        if(rob.qu.v[pos].curr.done){
+            return;
+        }
         rob.qu.v[pos].next.rob_tag = Bbuf.curr.rob_tag;
         rob.qu.v[pos].next.type = 2; // rd and value for jal and jalr is written before
         rob.qu.v[pos].next.actual_dest = Bbuf.curr.actual_dest;
         rob.qu.v[pos].next.branch_misjumped = Bbuf.curr.mispredicted;
         rob.qu.v[pos].next.done = true;
     }
-    else if(Abuf.curr.valid && (Abuf.curr.submitted_id != last_id.curr || last_type.curr != 1)){
+    else if(Abuf.curr.valid){
         UseA = true, IdA = Abuf.curr.submitted_id;
         last_id.next = Abuf.curr.submitted_id, last_type.next = 1;
         uint_32 pos = Abuf.curr.rob_tag;
         pos &= (rob.Queuesize_ - 1); // come from Queue size
         if(pos == 0){
             pos = rob.Queuesize_;
+        }
+        if(rob.qu.v[pos].curr.done){
+            return;
         }
         rob.qu.v[pos].next.rob_tag = Abuf.curr.rob_tag;
         rob.qu.v[pos].next.type = 1;

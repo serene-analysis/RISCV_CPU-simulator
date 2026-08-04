@@ -18,7 +18,7 @@ void BU::move(BU_CDB_Buffer &Cbuf, bool &BranchRSStall){
             bpos = i;
             got++;
         }
-        else if(!accepted.curr || i != submitted_id.curr){
+        else{
             epos = i;
         }
     }
