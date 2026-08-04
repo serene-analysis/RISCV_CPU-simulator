@@ -66,7 +66,9 @@ signed main(){
         alu.tick();
         timestamp++;
     }
-    fprintf(stderr, "cycles=%d instructions=%u\n", timestamp, rob.committed);
+    fprintf(stderr, "cycles=%d instructions=%u branches=%u branch_accuracy=%.2f%%\n",
+        timestamp, rob.committed, rob.branches,
+        rob.branches ? 100.0 * (rob.branches - rob.branch_mispred) / rob.branches : 100.0);
     return 0;
 }
 /*

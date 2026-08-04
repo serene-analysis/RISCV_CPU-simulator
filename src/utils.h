@@ -254,6 +254,8 @@ struct ROB{
     Unit<ROB_CommitStore_Buffer> Rbuf;
     Unit<bool> flushed;
     uint_32 committed = 0;
+    uint_32 branches = 0;
+    uint_32 branch_mispred = 0;
     void allocate(const uint_8 &type, const uint_8 &rd, const uint_32 PC, const bool &predicted_jump,
         const uint_32 &nojump_dest, const uint_32 &jump_dest, bool &ISStall, uint_32 &ret);
     void move(IF_IS &if_is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU &Bu,

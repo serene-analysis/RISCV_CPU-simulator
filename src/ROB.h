@@ -66,6 +66,7 @@ void ROB::move(IF_IS &If_is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU
                 //fprintf(stderr, "not misjumped\n");
             }
             If_is.update_bht(fir.value - 4, (fir.actual_dest != fir.value));
+            branches++, branch_mispred += fir.branch_misjumped;
             qu.pop(), committed++;
         }
         else if(fir.type == 3){
