@@ -15,10 +15,12 @@ void BU::move(BU_CDB_Buffer &Cbuf, bool &BranchRSStall){
     }
     for(int i=0;i<Memsize_;i++){
         if(mem[i].curr.valid){
-            bpos = i;
+            if(bpos == Memsize_ || mem[i].curr.rob_tag < mem[bpos].curr.rob_tag){ // FIX: always send the OLDEST pending entry (smallest rob_tag)
+                bpos = i;
+            }
             got++;
         }
-        else{
+        else if(!accepted.curr || i != submitted_id.curr){
             epos = i;
         }
     }

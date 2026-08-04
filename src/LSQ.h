@@ -95,8 +95,10 @@ void LSQ::move(LSQ_DMEM_Buffer &Dbuf, CDB_Broadcast_Buffer &Cbuf, const ROB_Comm
             }
             else{
                 if(!lq.empty() && lq.front().base_ready){
+                    fprintf(stderr, "[LDISP] tag=%u base=%u imm=%u addr=%u\n", lq.front().rob_tag, lq.front().vbase, lq.front().imm, lq.front().vbase + lq.front().imm); // DEBUG
                     Dbuf.valid = true;
                     Dbuf.rob_tag = lq.front().rob_tag;
+                    Dbuf.rd = lq.front().rd;
                     Dbuf.mem_read = true, Dbuf.mem_write = false;
                     Dbuf.mem_unsigned = lq.front().mem_unsigned, Dbuf.mem_mask = lq.front().mem_mask;
                     Dbuf.goal_addr = lq.front().vbase + lq.front().imm; // Need an adder

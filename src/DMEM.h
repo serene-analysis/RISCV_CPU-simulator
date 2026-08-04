@@ -25,9 +25,11 @@ struct DMEM{
         for(int i=0;i<Memsize_;i++){
             if(mem[i].curr.valid){
                 got++;
-                bpos = i;
+                if(bpos == Memsize_ || mem[i].curr.rob_tag < mem[bpos].curr.rob_tag){ // FIX: always send the OLDEST pending entry (smallest rob_tag)
+                    bpos = i;
+                }
             }
-            else{
+            else if(!accepted.curr || i != submitted_id.curr){
                 epos = i;
             }
         }
@@ -50,6 +52,7 @@ struct DMEM{
                     Cbuf.is_read = true;
                     DMEM_operation(mem[bpos].curr.write_data, mem[bpos].curr.mem_read, mem[bpos].curr.mem_write,
                         mem[bpos].curr.mem_unsigned, mem[bpos].curr.mem_mask, mem[bpos].curr.write_addr, Cbuf.load_result);
+                    fprintf(stderr, "[DMEMRD] tag=%u addr=%u val=%u\n", mem[bpos].curr.rob_tag, mem[bpos].curr.write_addr, Cbuf.load_result); // DEBUG
                     Cbuf.rd = mem[bpos].curr.rd;
                     Cbuf.submitted_id = bpos;
                 }

@@ -18,14 +18,21 @@ void ALU::move(ALU_CDB_Buffer &Cbuf, bool &ArithRSStall){
     }
     for(int i=0;i<Memsize_;i++){
         if(mem[i].curr.valid){
-            bpos = i;
+            if(bpos == Memsize_ || mem[i].curr.rob_tag < mem[bpos].curr.rob_tag){ // FIX: always send the OLDEST pending entry (smallest rob_tag), so a pending broadcast is re-sent until accepted and never overwritten by a newer send
+                bpos = i;
+            }
             got++;
         }
-        else{
+        else if(!accepted.curr || i != submitted_id.curr){
             epos = i;
         }
     }
     fprintf(stderr, "ALU : got = %d, valid = %d, bpos = %u, accepted = %d\n", got, buf.curr.valid, bpos, accepted.curr);
+    for(int i=0;i<Memsize_;i++){ // DEBUG
+        if(mem[i].curr.valid){
+            fprintf(stderr, "[ALUmem] i=%d tag=%u val=%u\n", i, mem[i].curr.rob_tag, mem[i].curr.alu_result);
+        }
+    }
     if(got >= Memsize_ - 4){
         ArithRSStall = true;
     }
@@ -50,6 +57,7 @@ void ALU::move(ALU_CDB_Buffer &Cbuf, bool &ArithRSStall){
         mem[epos].next.alu_result = ret;
     }
     if(bpos != Memsize_){
+        fprintf(stderr, "[ASEND] tag=%u val=%u\n", mem[bpos].curr.rob_tag, mem[bpos].curr.alu_result); // DEBUG
         Cbuf.valid = true;
         Cbuf.rob_tag = mem[bpos].curr.rob_tag;
         Cbuf.alu_result = mem[bpos].curr.alu_result;

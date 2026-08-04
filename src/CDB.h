@@ -63,6 +63,7 @@ void CDB::move(ROB &rob, bool &UseA, bool &UseB, bool &UseLS, uint_32 &IdA, uint
         if(pos == 0){
             pos = rob.Queuesize_;
         }
+        fprintf(stderr, "[AACC] tag=%u pos=%u currdone=%d\n", Abuf.curr.rob_tag, pos, rob.qu.v[pos].curr.done); // DEBUG
         if(rob.qu.v[pos].curr.done){
             return;
         }

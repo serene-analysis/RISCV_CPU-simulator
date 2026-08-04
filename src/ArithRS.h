@@ -33,6 +33,11 @@ void ArithRS::move(ArithRS_ALU_Buffer &Abuf, const CDB_Broadcast_Buffer &Cbuf, b
     }
     fprintf(stderr, "ArithRS : got = %d, valid = %d, qj = %u, qk = %u, op = %u, stalled = %d, bpos = %u, epos = %u\n",
         got, buf.curr.valid, buf.curr.qj, buf.curr.qk, buf.curr.alu_sel, stall.curr, bpos, epos);
+    for(int i=0;i<EntrySize_;i++){ // DEBUG
+        if(ent[i].curr.busy){
+            fprintf(stderr, "[RSEntry] i=%d tag=%u qj=%u qk=%u vj=%u vk=%u\n", i, ent[i].curr.rob_tag, ent[i].curr.qj, ent[i].curr.qk, ent[i].curr.vj, ent[i].curr.vk);
+        }
+    }
     if(got >= EntrySize_ - 4){
         fprintf(stderr, "ArithRS:ISStall\n");
         ISStall = true;

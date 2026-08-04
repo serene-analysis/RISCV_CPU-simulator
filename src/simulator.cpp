@@ -41,7 +41,7 @@ signed main(){
     int timestamp = 0;
     bool ended = false, always = false;
     uint_32 end_tag = 0;
-    while(!ended && (timestamp < 4000 || always)){
+    while(!ended && (timestamp < 200000 || always)){
         fprintf(stderr, "timestamp = %d\n", ++timestamp);
         rob.move(If, is, ars, brs, lsq, alu, bu, dmem, cdb, rf, rat, ended, end_tag);
         lsq.move(dmem.buf.next, cdb.Cbuf.curr, rob.Rbuf.curr, is.RSstall.next);
