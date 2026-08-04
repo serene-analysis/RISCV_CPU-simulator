@@ -94,14 +94,15 @@ struct Queue{
         return size() >= n - 4;
     }
     tp front(){
-        return v[l.curr].curr;
+        return v[nxt(l.curr)].curr;
     }
     void pop(){
         l.next = nxt(l.curr);
+        v[nxt(l.curr)].next.busy = false;
         return;
     }
     void push(tp x){
-        v[r.curr].next = x, r.next = nxt(r.curr), cnt.next++;
+        v[nxt(r.curr)].next = x, r.next = nxt(r.curr), cnt.next++;
         return;
     }
 };
@@ -187,7 +188,7 @@ struct ROBEntry{
     uint_8 rd;
     uint_32 value;
     bool predicted_jump, branch_misjumped;
-    uint_32 nojump_dest, jump_dest;
+    uint_32 actual_dest;
     bool done; // can be commited or not
     uint_32 write_addr;
     bool is_read;

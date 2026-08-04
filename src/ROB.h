@@ -22,13 +22,13 @@ void ROB::allocate(const uint_8 &type, const uint_8 &rd, const uint_32 PC, const
     if(qu.nearly_full()){
         ISStall = true;
     }
-    qu.push((ROBEntry){true, uint_32(qu.cnt.curr) + 1, type, rd, 0, predicted_jump, false, nojump_dest, jump_dest, false, 0, false, 0}); // Need an adder
+    qu.push((ROBEntry){true, uint_32(qu.cnt.curr) + 1, type, rd, PC + 4, predicted_jump, false, 0, false, 0, false, 0, false, 0}); // Need an adder
     ret = qu.cnt.curr + 1;
     return;
 }
 void ROB::move(IF &If, IS &Is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU &Bu, DMEM &Dmem, CDB &Cdb, RegFile &Regfile, RAT &Rat, bool &ended, uint_32 &end_tag){
     if(flushed.curr){
-        qu.l.next = qu.r.next = 1;
+        qu.l.next = qu.r.next = qu.cnt.next = 1;
         return;
     }
     if(qu.empty()){
@@ -36,7 +36,7 @@ void ROB::move(IF &If, IS &Is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, 
     }
     ROBEntry fir = qu.front();
     if(fir.done){
-        fprintf(stderr, "fir.type = %u\n", uint_32(fir.type));
+        fprintf(stderr, "\n\nfir.type = %u, l = %d, r = %d\n\n\n", uint_32(fir.type), qu.l.curr, qu.r.curr);
         if(fir.rob_tag == end_tag){
             ended = true;
             printf("%u\n", Regfile.reg[10].curr & 255u);
@@ -45,13 +45,19 @@ void ROB::move(IF &If, IS &Is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, 
         if(fir.type == 1){
             Regfile.write(fir.rd, fir.value);
             Rat.unlock(fir.rd, fir.rob_tag);
+            Cdb.Cbuf.next.valid = true;
+            Cdb.Cbuf.next.result = fir.value;
+            Cdb.Cbuf.next.rob_tag = fir.rob_tag;
             qu.pop();
         }
         else if(fir.type == 2){
+            fprintf(stderr, "rd = %u, value = %u, actual_dest = %u, misjumped = %d\n", fir.rd, fir.value, fir.actual_dest, fir.branch_misjumped);
+            Regfile.write(fir.rd, fir.value);
+            Rat.unlock(fir.rd, fir.rob_tag);
             if(fir.branch_misjumped){
                 If.flush(), Is.flush(), Ars.flush(), Brs.flush(), Lsq.flush(), Alu.flush(), Bu.flush(), Dmem.flush(), Cdb.flush(), Rat.flush(), flush();
                 If.redirected.next = true;
-                If.redirected_PC.next = fir.value;
+                If.redirected_PC.next = fir.actual_dest;
             }
             qu.pop();
         }
@@ -59,11 +65,15 @@ void ROB::move(IF &If, IS &Is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, 
             if(fir.is_read){
                 Regfile.write(fir.rd, fir.value);
                 Rat.unlock(fir.rd, fir.rob_tag);
+                Cdb.Cbuf.next.valid = true;
+                Cdb.Cbuf.next.result = fir.value;
+                Cdb.Cbuf.next.rob_tag = fir.rob_tag;
                 qu.pop();
             }
             else{
+                fprintf(stderr, "remaining_round = %u\n", fir.remaining_round);
                 if(fir.remaining_round != 0){
-                    qu.v[qu.l.curr].next.remaining_round = fir.remaining_round - 1;
+                    qu.v[qu.nxt(qu.l.curr)].next.remaining_round = fir.remaining_round - 1;
                 }
                 else{
                     uint_32 no_use = 0;
@@ -71,6 +81,7 @@ void ROB::move(IF &If, IS &Is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, 
                     Rbuf.next.valid = true;
                     Rbuf.next.rob_tag = fir.rob_tag;
                     qu.pop();
+                    //Lsq.sq.pop(); // LSQ will deal with that
                 }
             }
         }
@@ -84,7 +95,7 @@ void ROB::flush(){
     return;
 }
 void ROB::tick(){
-    for(int i=0;i<Queuesize_;i++){
+    for(int i=1;i<=Queuesize_;i++){
         qu.v[i].tick();
     }
     qu.l.tick(), qu.r.tick(), qu.cnt.tick();

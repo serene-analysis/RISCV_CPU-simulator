@@ -31,7 +31,8 @@ void ArithRS::move(ArithRS_ALU_Buffer &Abuf, const CDB_Broadcast_Buffer &Cbuf, b
             epos = i;
         }
     }
-    fprintf(stderr, "ArithRS : got = %d\n", got);
+    fprintf(stderr, "ArithRS : got = %d, valid = %d, qj = %u, qk = %u, op = %u, stalled = %d, bpos = %u, epos = %u\n",
+        got, buf.curr.valid, buf.curr.qj, buf.curr.qk, buf.curr.alu_sel, stall.curr, bpos, epos);
     if(got >= EntrySize_ - 4){
         fprintf(stderr, "ArithRS:ISStall\n");
         ISStall = true;
@@ -39,6 +40,7 @@ void ArithRS::move(ArithRS_ALU_Buffer &Abuf, const CDB_Broadcast_Buffer &Cbuf, b
     if(!stall.curr && bpos != EntrySize_){
         uint_32 va = MUX(ent[bpos].curr.vj, ent[bpos].curr.PC, ent[bpos].curr.alu_src_a),
             vb = MUX(ent[bpos].curr.vk, ent[bpos].curr.imm, ent[bpos].curr.alu_src_b);
+        fprintf(stderr, "ArithRS send {%u, %u, %u, %u} to ALU\n", bpos, va, vb, ent[bpos].curr.alu_sel);
         Abuf.valid = true;
         Abuf.alu_sel = ent[bpos].curr.alu_sel, Abuf.operand_a = va, Abuf.operand_b = vb;
         Abuf.rob_tag = ent[bpos].curr.rob_tag;
@@ -50,8 +52,18 @@ void ArithRS::move(ArithRS_ALU_Buffer &Abuf, const CDB_Broadcast_Buffer &Cbuf, b
         ent[epos].next.alu_sel = buf.curr.alu_sel;
         ent[epos].next.alu_src_a = buf.curr.alu_src_a, ent[epos].next.alu_src_b = buf.curr.alu_src_b;
         ent[epos].next.rob_tag = buf.curr.rob_tag;
-        ent[epos].next.vj = buf.curr.vj, ent[epos].next.qj = buf.curr.qj;
-        ent[epos].next.vk = buf.curr.vk, ent[epos].next.qk = buf.curr.qk;
+        if(Cbuf.valid && buf.curr.qj == Cbuf.rob_tag){
+            ent[epos].next.vj = Cbuf.result, ent[epos].next.qj = 0;
+        }
+        else{
+            ent[epos].next.vj = buf.curr.vj, ent[epos].next.qj = buf.curr.qj;
+        }
+        if(Cbuf.valid && buf.curr.qk == Cbuf.rob_tag){
+            ent[epos].next.vk = Cbuf.result, ent[epos].next.qk = 0;
+        }
+        else{
+            ent[epos].next.vk = buf.curr.vk, ent[epos].next.qk = buf.curr.qk;
+        }
         ent[epos].next.PC = buf.curr.PC, ent[epos].next.imm = buf.curr.imm;
     }
     return;

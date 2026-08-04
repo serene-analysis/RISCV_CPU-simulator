@@ -11,8 +11,7 @@ void BU::move(BU_CDB_Buffer &Cbuf, bool &BranchRSStall){
     }
     uint_32 got = 0, epos = Memsize_, bpos = Memsize_;
     if(accepted.curr){
-        mem[submitted_id.curr].curr.valid = false;
-        got--;
+        mem[submitted_id.curr].next.valid = false;
     }
     for(int i=0;i<Memsize_;i++){
         if(mem[i].curr.valid){
@@ -23,6 +22,7 @@ void BU::move(BU_CDB_Buffer &Cbuf, bool &BranchRSStall){
             epos = i;
         }
     }
+    fprintf(stderr, "BU : got = %d, valid = %d, bpos = %u, accepted = %d\n", got, buf.curr.valid, bpos, accepted.curr);
     if(got >= Memsize_ - 4){
         BranchRSStall = true;
     }
@@ -31,7 +31,7 @@ void BU::move(BU_CDB_Buffer &Cbuf, bool &BranchRSStall){
         bool condition_met = false;
         if(!buf.curr.is_jump){
             uint_32 vrs1 = buf.curr.vj, vrs2 = buf.curr.vk;
-            logout && fprintf(stderr, "vrs1 = %u, vrs2 = %u\n", vrs1, vrs2);
+            fprintf(stderr, "vrs1 = %u, vrs2 = %u\n", vrs1, vrs2);
             switch(buf.curr.funct3){
                 case 0: condition_met = EQUAL(vrs1, vrs2); break;
                 case 1: condition_met = !EQUAL(vrs1, vrs2); break;
@@ -45,7 +45,7 @@ void BU::move(BU_CDB_Buffer &Cbuf, bool &BranchRSStall){
                 }
             }
         }
-        logout && fprintf(stderr, "condition_met = %d\n", condition_met);
+        fprintf(stderr, "is_jump = %d, condition_met = %d, rob_tag = %u\n", buf.curr.is_jump, condition_met, buf.curr.rob_tag);
         uint_32 cleared = (buf.curr.jump_dest >> 1) << 1; // Jal
         mem[epos].next.valid = true;
         mem[epos].next.rob_tag = buf.curr.rob_tag;
@@ -57,12 +57,14 @@ void BU::move(BU_CDB_Buffer &Cbuf, bool &BranchRSStall){
             mem[epos].next.actual_dest = (condition_met ? buf.curr.jump_dest : buf.curr.nojump_dest);
         }
     }
-    if(bpos){
+    if(bpos != Memsize_){
         Cbuf.valid = true;
         Cbuf.rob_tag = mem[bpos].curr.rob_tag;
         Cbuf.actual_dest = mem[bpos].curr.actual_dest;
         Cbuf.mispredicted = mem[bpos].curr.mispredicted;
         Cbuf.submitted_id = bpos;
+        fprintf(stderr, "BU send to CDB : rob_tag = %u, actual_dest = %u, mispredicted = %u, bpos = %u\n",
+            mem[bpos].curr.rob_tag, mem[bpos].curr.actual_dest, mem[bpos].curr.mispredicted, bpos);
     }
 }
 void BU::flush(){

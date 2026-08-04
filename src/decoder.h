@@ -138,7 +138,7 @@ Instruction Decoder::decode(uint_32 inst){
         }
         default:{
             fflush(stderr);
-            throw false;
+            //throw false;
         }
     }
     return ret;

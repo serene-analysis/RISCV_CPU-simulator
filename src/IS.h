@@ -55,8 +55,9 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
     }
     if(buf.curr.valid){
         Instruction inst = dec.decode(buf.curr.inst);
-        fprintf(stderr, "valid, inst = %u\n", buf.curr.inst), inst.out();
+        fprintf(stderr, "valid, inst = %u = 0x%x\n", buf.curr.inst, buf.curr.inst), inst.out();
         if(inst.mem_read || inst.mem_write){
+            fprintf(stderr, "Memory\n");
             LSbuf.valid = true;
             LSbuf.mem_read = inst.mem_read, LSbuf.mem_write = inst.mem_write;
             LSbuf.mem_unsigned = inst.mem_unsigned, LSbuf.mem_mask = inst.mem_mask;
@@ -91,6 +92,7 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
             }
         }
         else if(inst.is_branch || inst.is_jump){
+            fprintf(stderr, "Branch\n");
             Bbuf.valid = true;
             Bbuf.is_jump = inst.is_jump;
             Bbuf.is_jalr = (inst.is_jump && inst.alu_src_a == 0);
@@ -127,7 +129,7 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
             }
             else{
                 uint_32 ntag = 0, nqj = 0, nqk = 0;
-                rob.allocate(1, inst.rd, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), Bbuf.rob_tag = ntag;
+                rob.allocate(1, 0, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), Bbuf.rob_tag = ntag;
                 if(buf.curr.inst == 0x0ff00513){
                     end_tag = ntag;
                 }
@@ -144,7 +146,11 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
             }
         }
         else{
+            fprintf(stderr, "Arithmetic\n");
             Abuf.valid = true;
+            Abuf.alu_sel = inst.alu_sel;
+            Abuf.alu_src_a = inst.alu_src_a, Abuf.alu_src_b = inst.alu_src_b;
+            Abuf.imm = inst.imm, Abuf.PC = buf.curr.PC;
             uint_32 ntag = 0, nqj = 0, nqk = 0;
             rob.allocate(1, inst.rd, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), Abuf.rob_tag = ntag;
             if(buf.curr.inst == 0x0ff00513){

@@ -14,8 +14,7 @@ void ALU::move(ALU_CDB_Buffer &Cbuf, bool &ArithRSStall){
     }
     uint_32 got = 0, epos = Memsize_, bpos = Memsize_;
     if(accepted.curr){
-        mem[submitted_id.curr].curr.valid = false;
-        got--;
+        mem[submitted_id.curr].next.valid = false;
     }
     for(int i=0;i<Memsize_;i++){
         if(mem[i].curr.valid){
@@ -26,7 +25,7 @@ void ALU::move(ALU_CDB_Buffer &Cbuf, bool &ArithRSStall){
             epos = i;
         }
     }
-    fprintf(stderr, "ALU : got = %d\n", got);
+    fprintf(stderr, "ALU : got = %d, valid = %d, bpos = %u, accepted = %d\n", got, buf.curr.valid, bpos, accepted.curr);
     if(got >= Memsize_ - 4){
         ArithRSStall = true;
     }
@@ -50,7 +49,7 @@ void ALU::move(ALU_CDB_Buffer &Cbuf, bool &ArithRSStall){
         mem[epos].next.rob_tag = buf.curr.rob_tag;
         mem[epos].next.alu_result = ret;
     }
-    if(bpos){
+    if(bpos != Memsize_){
         Cbuf.valid = true;
         Cbuf.rob_tag = mem[bpos].curr.rob_tag;
         Cbuf.alu_result = mem[bpos].curr.alu_result;

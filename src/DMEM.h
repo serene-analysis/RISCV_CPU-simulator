@@ -20,15 +20,12 @@ struct DMEM{
         }
         uint_32 got = 0, epos = Memsize_, bpos = Memsize_;
         if(accepted.curr){
-            mem[submitted_id.curr].curr.valid = false;
-            got--;
+            mem[submitted_id.curr].next.valid = false;
         }
         for(int i=0;i<Memsize_;i++){
             if(mem[i].curr.valid){
                 got++;
-                if(mem[i].curr.mem_write || (mem[i].curr.mem_read && mem[i].curr.remaining_round == 0)){
-                    bpos = i;
-                }
+                bpos = i;
             }
             else if(!accepted.curr || i != submitted_id.curr){
                 epos = i;
@@ -39,10 +36,10 @@ struct DMEM{
         }
         if(buf.curr.valid){
             assert(epos != Memsize_);
-            mem[epos].curr = (DMEMEntry){true, buf.curr.rob_tag, buf.curr.rd, 0, 3, buf.curr.goal_addr,
+            mem[epos].next = (DMEMEntry){true, buf.curr.rob_tag, buf.curr.rd, 0, 3, buf.curr.goal_addr,
                 buf.curr.write_data, buf.curr.mem_read, buf.curr.mem_write, buf.curr.mem_unsigned, buf.curr.mem_mask};
         }
-        if(bpos){
+        if(bpos != Memsize_){
             if(mem[bpos].curr.mem_read){
                 if(mem[bpos].curr.remaining_round != 0){
                     mem[bpos].next.remaining_round = mem[bpos].curr.remaining_round - 1;
@@ -55,7 +52,6 @@ struct DMEM{
                         mem[bpos].curr.mem_unsigned, mem[bpos].curr.mem_mask, mem[bpos].curr.write_addr, Cbuf.load_result);
                     Cbuf.rd = mem[bpos].curr.rd;
                     Cbuf.submitted_id = bpos;
-                    mem[bpos].next.valid = false;
                 }
             }
             else{
@@ -65,7 +61,6 @@ struct DMEM{
                 Cbuf.write_addr = mem[bpos].curr.write_addr, Cbuf.write_data = mem[bpos].curr.write_data;
                 Cbuf.submitted_id = bpos;
                 Cbuf.mem_unsigned = mem[bpos].curr.mem_unsigned, Cbuf.mem_mask = mem[bpos].curr.mem_mask;
-                mem[bpos].next.valid = false;
             }
         }
     }

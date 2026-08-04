@@ -34,13 +34,15 @@ void BranchRS::move(BranchRS_BU_Buffer &Bbuf, CDB_Broadcast_Buffer &Cbuf, bool &
             epos = i;
         }
     }
+    fprintf(stderr, "BranchRS : got = %d, valid = %d, qj = %u, qk = %u, is_jump = %d, is_jalr = %d, stalled = %d, bpos = %u, epos = %u, rob_tag = %u\n",
+        got, buf.curr.valid, buf.curr.qj, buf.curr.qk, buf.curr.is_jump, buf.curr.is_jalr, stall.curr, bpos, epos, buf.curr.rob_tag);
     if(got >= EntrySize_ - 4){
         fprintf(stderr, "BranchRS:ISStall\n");
         ISStall = true;
     }
     if(!stall.curr && bpos != EntrySize_){
         Bbuf.valid = true;
-        Bbuf.rob_tag = buf.curr.rob_tag;
+        Bbuf.rob_tag = ent[bpos].curr.rob_tag;
         Bbuf.vj = ent[bpos].curr.vj, Bbuf.vk = ent[bpos].curr.vk;
         Bbuf.is_jump = ent[bpos].curr.is_jump, Bbuf.is_jalr = ent[bpos].curr.is_jalr;
         Bbuf.jump_dest = ent[bpos].curr.jump_dest, Bbuf.nojump_dest = ent[bpos].curr.nojump_dest;
@@ -57,8 +59,18 @@ void BranchRS::move(BranchRS_BU_Buffer &Bbuf, CDB_Broadcast_Buffer &Cbuf, bool &
         ent[epos].next.is_jalr = buf.curr.is_jalr, ent[epos].next.is_jump = buf.curr.is_jump;
         ent[epos].next.jump_dest = buf.curr.jump_dest, ent[epos].next.nojump_dest = buf.curr.nojump_dest;
         ent[epos].next.predicted_jump = buf.curr.predicted_jump;
-        ent[epos].next.vj = buf.curr.vj, ent[epos].next.qj = buf.curr.qj;
-        ent[epos].next.vk = buf.curr.vk, ent[epos].next.qk = buf.curr.qk;
+        if(Cbuf.valid && buf.curr.qj == Cbuf.rob_tag){
+            ent[epos].next.vj = Cbuf.result, ent[epos].next.qj = 0;
+        }
+        else{
+            ent[epos].next.vj = buf.curr.vj, ent[epos].next.qj = buf.curr.qj;
+        }
+        if(Cbuf.valid && buf.curr.qk == Cbuf.rob_tag){
+            ent[epos].next.vk = Cbuf.result, ent[epos].next.qk = 0;
+        }
+        else{
+            ent[epos].next.vk = buf.curr.vk, ent[epos].next.qk = buf.curr.qk;
+        }
         ent[epos].next.PC = buf.curr.PC, ent[epos].next.imm = buf.curr.imm;
         ent[epos].next.busy = true;
     }

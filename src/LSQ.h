@@ -78,49 +78,64 @@ void LSQ::move(LSQ_DMEM_Buffer &Dbuf, CDB_Broadcast_Buffer &Cbuf, const ROB_Comm
     }
     if(!stall.curr){
         if(lq.empty() && sq.empty()){
-            return;
-        }
-        if(lq.empty() || (!lq.empty() && !sq.empty() && lq.front().rob_tag > sq.front().rob_tag)){
-            if(!sq.empty() && !sq.front().submitted){
-                sq.v[sq.l.curr].next.submitted = true;
-                Dbuf.valid = true;
-                Dbuf.rob_tag = sq.front().rob_tag;
-                Dbuf.mem_read = false, Dbuf.mem_write = true;
-                Dbuf.mem_unsigned = sq.front().mem_unsigned, Dbuf.mem_mask = sq.front().mem_mask;
-                Dbuf.goal_addr = sq.front().vbase + sq.front().imm; // Need an adder
-                Dbuf.write_data = sq.front().vdata;
-            }
+            
         }
         else{
-            if(!lq.empty()){
-                Dbuf.valid = true;
-                Dbuf.rob_tag = lq.front().rob_tag;
-                Dbuf.mem_read = true, Dbuf.mem_write = false;
-                Dbuf.mem_unsigned = lq.front().mem_unsigned, Dbuf.mem_mask = lq.front().mem_mask;
-                Dbuf.goal_addr = lq.front().vbase + lq.front().imm; // Need an adder
-                lq.pop();
+            if(lq.empty() || (!lq.empty() && !sq.empty() && lq.front().rob_tag > sq.front().rob_tag)){
+                if(!sq.empty() && !sq.front().submitted && sq.front().base_ready && sq.front().data_ready){
+                    sq.v[sq.l.curr].next.submitted = true;
+                    Dbuf.valid = true;
+                    Dbuf.rob_tag = sq.front().rob_tag;
+                    Dbuf.mem_read = false, Dbuf.mem_write = true;
+                    Dbuf.mem_unsigned = sq.front().mem_unsigned, Dbuf.mem_mask = sq.front().mem_mask;
+                    Dbuf.goal_addr = sq.front().vbase + sq.front().imm; // Need an adder
+                    Dbuf.write_data = sq.front().vdata;
+                }
+            }
+            else{
+                if(!lq.empty() && lq.front().base_ready){
+                    Dbuf.valid = true;
+                    Dbuf.rob_tag = lq.front().rob_tag;
+                    Dbuf.mem_read = true, Dbuf.mem_write = false;
+                    Dbuf.mem_unsigned = lq.front().mem_unsigned, Dbuf.mem_mask = lq.front().mem_mask;
+                    Dbuf.goal_addr = lq.front().vbase + lq.front().imm; // Need an adder
+                    lq.pop();
+                }
             }
         }
     }
     if(buf.curr.valid){
         if(buf.curr.mem_read){
-            lq.push((LoadEntry){true, buf.curr.rob_tag, buf.curr.vj, buf.curr.qj, false,
+            uint_32 nvj = buf.curr.vj, nqj = buf.curr.qj;
+            if(nqj == Cbuf.rob_tag){
+                nvj = Cbuf.result, nqj = 0;
+            }
+            lq.push((LoadEntry){true, buf.curr.rob_tag, nvj, nqj, false,
                 buf.curr.mem_unsigned, buf.curr.mem_mask, buf.curr.rd, buf.curr.imm});
         }
         else{
-            sq.push((StoreEntry){true, buf.curr.rob_tag, buf.curr.vj, buf.curr.qj, buf.curr.vk,
-                buf.curr.qk, false, false, buf.curr.mem_unsigned, buf.curr.mem_mask, buf.curr.imm, false});
+            uint_32 nvj = buf.curr.vj, nqj = buf.curr.qj;
+            if(nqj == Cbuf.rob_tag){
+                nvj = Cbuf.result, nqj = 0;
+            }
+            uint_32 nvk = buf.curr.vk, nqk = buf.curr.qk;
+            if(nqk == Cbuf.rob_tag){
+                nvk = Cbuf.result, nqk = 0;
+            }
+            sq.push((StoreEntry){true, buf.curr.rob_tag, nvj, nqj, nvk, nqk,
+                false, false, buf.curr.mem_unsigned, buf.curr.mem_mask, buf.curr.imm, false});
         }
     }
 }
 void LSQ::flush(){
     flushed.next = true;
+    lq.l.next = lq.r.next = sq.l.next = sq.r.next = 1;
     return;
 }
 void LSQ::tick(){
     buf.tick();
     buf.next.valid = false;
-    for(int i=0;i<EntrySize_;i++){
+    for(int i=1;i<=EntrySize_;i++){
         lq.v[i].tick(), sq.v[i].tick();
     }
     lq.l.tick(), lq.r.tick(), lq.cnt.tick();
