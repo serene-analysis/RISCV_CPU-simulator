@@ -18,3 +18,4 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # 生成可执行文件 code
 add_executable(code src/simulator.cpp)
+target_compile_options(code PRIVATE -Ofast)
