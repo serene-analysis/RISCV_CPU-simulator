@@ -13,7 +13,8 @@ void ALU::move(ALU_CDB_Buffer &Cbuf, bool &ArithRSStall){
         return;
     }
     uint_32 got = 0, epos = Memsize_, bpos = Memsize_;
-    if(accepted.curr){
+    if(accepted.curr && mem[submitted_id.curr].curr.rob_tag == sent_tag[submitted_id.curr]){ // FIX: only clear the slot if it still holds the entry we actually sent (a newer result may have reused the slot)
+        mem[submitted_id.curr].curr.valid = false;
         mem[submitted_id.curr].next.valid = false;
     }
     for(int i=0;i<Memsize_;i++){
@@ -27,19 +28,12 @@ void ALU::move(ALU_CDB_Buffer &Cbuf, bool &ArithRSStall){
             epos = i;
         }
     }
-    fprintf(stderr, "ALU : got = %d, valid = %d, bpos = %u, accepted = %d\n", got, buf.curr.valid, bpos, accepted.curr);
-    for(int i=0;i<Memsize_;i++){ // DEBUG
-        if(mem[i].curr.valid){
-            fprintf(stderr, "[ALUmem] i=%d tag=%u val=%u\n", i, mem[i].curr.rob_tag, mem[i].curr.alu_result);
-        }
-    }
     if(got >= Memsize_ - 4){
         ArithRSStall = true;
     }
     if(buf.curr.valid){
         uint_32 va = buf.curr.operand_a, vb = buf.curr.operand_b;
         uint_8 type = buf.curr.alu_sel;
-        fprintf(stderr, "ALU_operation: va = %u, vb = %u, type = %u\n", va, vb, uint_32(type));
         uint_32 ret = MUX(0, ADD(va, vb), EQUAL(type, ALU_add) | EQUAL(type, ALU_addi)) |
             MUX(0, SUB(va, vb), EQUAL(type, ALU_sub)) | 
             MUX(0, AND(va, vb), EQUAL(type, ALU_and) | EQUAL(type, ALU_andi)) |
@@ -57,7 +51,7 @@ void ALU::move(ALU_CDB_Buffer &Cbuf, bool &ArithRSStall){
         mem[epos].next.alu_result = ret;
     }
     if(bpos != Memsize_){
-        fprintf(stderr, "[ASEND] tag=%u val=%u\n", mem[bpos].curr.rob_tag, mem[bpos].curr.alu_result); // DEBUG
+        sent_tag[bpos] = mem[bpos].curr.rob_tag; // FIX: remember which entry we sent from this slot
         Cbuf.valid = true;
         Cbuf.rob_tag = mem[bpos].curr.rob_tag;
         Cbuf.alu_result = mem[bpos].curr.alu_result;

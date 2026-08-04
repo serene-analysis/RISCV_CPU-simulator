@@ -33,7 +33,6 @@ void LSQ::move(LSQ_DMEM_Buffer &Dbuf, CDB_Broadcast_Buffer &Cbuf, const ROB_Comm
         lq.l.next = lq.r.next = sq.l.next = sq.r.next = 1;
         return;
     }
-    fprintf(stderr, "LSQ : lq.size() = %d, sq.size() = %d, buf.valid = %d\n", lq.size(), sq.size(), buf.curr.valid);
     uint_32 lgot = 0, sgot = 0;
     for(int i=0;i<EntrySize_;i++){
         if(Cbuf.valid && lq.v[i].curr.busy){
@@ -69,13 +68,11 @@ void LSQ::move(LSQ_DMEM_Buffer &Dbuf, CDB_Broadcast_Buffer &Cbuf, const ROB_Comm
         }
     }
     if(lq.nearly_full() || sq.nearly_full()){
-        fprintf(stderr, "LSQ:ISStall\n");
         ISStall = true;
     }
     if(Rbuf.valid){
         assert(Rbuf.rob_tag == sq.front().rob_tag);
-        sq.pop();
-        return;
+        sq.pop(); // FIX: do NOT return here - the buf->queue push below must still happen (was: a store arriving on the same cycle as a store-commit signal got dropped)
     }
     if(!stall.curr){
         if(lq.empty() && sq.empty()){
@@ -84,7 +81,7 @@ void LSQ::move(LSQ_DMEM_Buffer &Dbuf, CDB_Broadcast_Buffer &Cbuf, const ROB_Comm
         else{
             if(lq.empty() || (!lq.empty() && !sq.empty() && lq.front().rob_tag > sq.front().rob_tag)){
                 if(!sq.empty() && !sq.front().submitted && sq.front().base_ready && sq.front().data_ready){
-                    sq.v[sq.l.curr].next.submitted = true;
+                    sq.v[sq.nxt(sq.l.curr)].next.submitted = true; // FIX: the front entry lives at v[nxt(l)], not v[l] (was: flag never set -> store re-dispatched every cycle -> DMEM flooded with duplicates)
                     Dbuf.valid = true;
                     Dbuf.rob_tag = sq.front().rob_tag;
                     Dbuf.mem_read = false, Dbuf.mem_write = true;
@@ -95,7 +92,6 @@ void LSQ::move(LSQ_DMEM_Buffer &Dbuf, CDB_Broadcast_Buffer &Cbuf, const ROB_Comm
             }
             else{
                 if(!lq.empty() && lq.front().base_ready){
-                    fprintf(stderr, "[LDISP] tag=%u base=%u imm=%u addr=%u\n", lq.front().rob_tag, lq.front().vbase, lq.front().imm, lq.front().vbase + lq.front().imm); // DEBUG
                     Dbuf.valid = true;
                     Dbuf.rob_tag = lq.front().rob_tag;
                     Dbuf.rd = lq.front().rd;

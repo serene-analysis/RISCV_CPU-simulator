@@ -35,9 +35,7 @@ void ROB::move(IF &If, IS &Is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, 
         return;
     }
     ROBEntry fir = qu.front();
-    fprintf(stderr, "[ROBhead] tag=%u type=%u done=%d rem=%u\n", fir.rob_tag, uint_32(fir.type), fir.done, fir.remaining_round); // DEBUG
     if(fir.done){
-        fprintf(stderr, "\n\nfir.type = %u, l = %d, r = %d, cnt = %d\n\n\n", uint_32(fir.type), qu.l.curr, qu.r.curr, qu.cnt.curr);
         if(fir.rob_tag == end_tag){
             ended = true;
             printf("%u\n", Regfile.reg[10].curr & 255u);
@@ -52,7 +50,6 @@ void ROB::move(IF &If, IS &Is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, 
             qu.pop();
         }
         else if(fir.type == 2){
-            fprintf(stderr, "rd = %u, value = %u, actual_dest = %u, misjumped = %d\n", fir.rd, fir.value, fir.actual_dest, fir.branch_misjumped);
             Regfile.write(fir.rd, fir.value);
             Rat.unlock(fir.rd, fir.rob_tag);
             if(fir.branch_misjumped){
@@ -64,7 +61,6 @@ void ROB::move(IF &If, IS &Is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, 
         }
         else if(fir.type == 3){
             if(fir.is_read){
-                fprintf(stderr, "[LDC] tag=%u rd=%u val=%u\n", fir.rob_tag, fir.rd, fir.value); // DEBUG
                 Regfile.write(fir.rd, fir.value);
                 Rat.unlock(fir.rd, fir.rob_tag);
                 Cdb.Cbuf.next.valid = true;
@@ -73,7 +69,6 @@ void ROB::move(IF &If, IS &Is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, 
                 qu.pop();
             }
             else{
-                fprintf(stderr, "remaining_round = %u\n", fir.remaining_round);
                 if(fir.remaining_round != 0){
                     qu.v[qu.nxt(qu.l.curr)].next.remaining_round = fir.remaining_round - 1;
                 }

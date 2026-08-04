@@ -34,10 +34,7 @@ void BranchRS::move(BranchRS_BU_Buffer &Bbuf, CDB_Broadcast_Buffer &Cbuf, bool &
             epos = i;
         }
     }
-    fprintf(stderr, "BranchRS : got = %d, valid = %d, qj = %u, qk = %u, is_jump = %d, is_jalr = %d, stalled = %d, bpos = %u, epos = %u, rob_tag = %u\n",
-        got, buf.curr.valid, buf.curr.qj, buf.curr.qk, buf.curr.is_jump, buf.curr.is_jalr, stall.curr, bpos, epos, buf.curr.rob_tag);
     if(got >= EntrySize_ - 4){
-        fprintf(stderr, "BranchRS:ISStall\n");
         ISStall = true;
     }
     if(!stall.curr && bpos != EntrySize_){

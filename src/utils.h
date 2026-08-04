@@ -223,6 +223,7 @@ struct ALU{
     const static int Memsize_ = 8;
     Unit<ArithRS_ALU_Buffer> buf;
     Unit<ALU_CDB_Buffer> mem[Memsize_];
+    uint_32 sent_tag[Memsize_]; // FIX: rob_tag of the entry last sent from each slot, for acceptance identity check
     Unit<uint_32> submitted_id;
     Unit<bool> accepted, flushed;
     void move(ALU_CDB_Buffer &Cbuf, bool &ArithRSStall);
@@ -252,6 +253,7 @@ struct BU{
     const static int Memsize_ = 8;
     Unit<BranchRS_BU_Buffer> buf;
     Unit<BU_CDB_Buffer> mem[Memsize_];
+    uint_32 sent_tag[Memsize_]; // FIX: rob_tag of the entry last sent from each slot, for acceptance identity check
     Unit<uint_32> submitted_id;
     Unit<bool> accepted, flushed;
     void move(BU_CDB_Buffer &Cbuf, bool &BranchRSStall);

@@ -11,7 +11,6 @@ struct IF_IS_Buffer{
 */
 
 void IF::move(IF_IS_Buffer &buf){
-    fprintf(stderr, "IF : PC.curr = %u, redirected = %d, stall = %d, foretold = %d\n", PC.curr, redirected.curr, stall.curr, foretold.curr);
     buf = IF_IS_Buffer();
     if(redirected.curr){
         PC.next = redirected_PC.curr;
@@ -33,7 +32,6 @@ void IF::move(IF_IS_Buffer &buf){
     }
     else{
         uint_32 inst = conv.fetch_instruction(PC.curr);
-        fprintf(stderr, "normal, inst = %u\n", inst);
         PC.next = PC.curr + 4; // Need an adder
         buf.valid = (inst != 0);
         buf.inst = inst;

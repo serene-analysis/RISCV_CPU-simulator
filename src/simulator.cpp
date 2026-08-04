@@ -39,10 +39,10 @@ signed main(){
     }
     If.PC.curr = If.PC.next = 0;
     int timestamp = 0;
-    bool ended = false, always = false;
+    bool ended = false, always = true;
     uint_32 end_tag = 0;
     while(!ended && (timestamp < 200000 || always)){
-        fprintf(stderr, "timestamp = %d\n", ++timestamp);
+        // DEBUG: fprintf(stderr, "timestamp = %d\n", ++timestamp);
         rob.move(If, is, ars, brs, lsq, alu, bu, dmem, cdb, rf, rat, ended, end_tag);
         lsq.move(dmem.buf.next, cdb.Cbuf.curr, rob.Rbuf.curr, is.RSstall.next);
         if(ended == false){

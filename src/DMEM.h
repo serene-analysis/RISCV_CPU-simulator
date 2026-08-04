@@ -9,6 +9,7 @@ struct DMEM{
     std::map<uint_32, Unit<uint_8>> DMEM;
     Unit<LSQ_DMEM_Buffer> buf;
     Unit<DMEMEntry> mem[Memsize_];
+    uint_32 sent_tag[Memsize_]; // FIX: rob_tag of the entry last sent from each slot, for acceptance identity check
     Unit<uint_32> submitted_id;
     Unit<bool> accepted, flushed;
     void move(DMEM_CDB_Buffer &Cbuf, bool &LSQStall){
@@ -19,7 +20,8 @@ struct DMEM{
             return;
         }
         uint_32 got = 0, epos = Memsize_, bpos = Memsize_;
-        if(accepted.curr){
+        if(accepted.curr && mem[submitted_id.curr].curr.rob_tag == sent_tag[submitted_id.curr]){ // FIX: only clear the slot if it still holds the entry we actually sent
+            mem[submitted_id.curr].curr.valid = false;
             mem[submitted_id.curr].next.valid = false;
         }
         for(int i=0;i<Memsize_;i++){
@@ -52,9 +54,9 @@ struct DMEM{
                     Cbuf.is_read = true;
                     DMEM_operation(mem[bpos].curr.write_data, mem[bpos].curr.mem_read, mem[bpos].curr.mem_write,
                         mem[bpos].curr.mem_unsigned, mem[bpos].curr.mem_mask, mem[bpos].curr.write_addr, Cbuf.load_result);
-                    fprintf(stderr, "[DMEMRD] tag=%u addr=%u val=%u\n", mem[bpos].curr.rob_tag, mem[bpos].curr.write_addr, Cbuf.load_result); // DEBUG
                     Cbuf.rd = mem[bpos].curr.rd;
                     Cbuf.submitted_id = bpos;
+                    sent_tag[bpos] = mem[bpos].curr.rob_tag; // FIX: remember which entry we sent from this slot
                 }
             }
             else{
@@ -63,6 +65,7 @@ struct DMEM{
                 Cbuf.is_read = false;
                 Cbuf.write_addr = mem[bpos].curr.write_addr, Cbuf.write_data = mem[bpos].curr.write_data;
                 Cbuf.submitted_id = bpos;
+                sent_tag[bpos] = mem[bpos].curr.rob_tag; // FIX: remember which entry we sent from this slot
                 Cbuf.mem_unsigned = mem[bpos].curr.mem_unsigned, Cbuf.mem_mask = mem[bpos].curr.mem_mask;
             }
         }
