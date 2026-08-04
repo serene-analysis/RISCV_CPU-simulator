@@ -26,10 +26,11 @@ struct StoreEntry{
 */
 void LSQ::move(LSQ_DMEM_Buffer &Dbuf, CDB_Broadcast_Buffer &Cbuf, const ROB_CommitStore_Buffer &Rbuf, bool &ISStall){
     if(flushed.curr){
-        for(int i=0;i<EntrySize_;i++){
+        for(int i=1;i<=EntrySize_;i++){
             lq.v[i].next.busy = false;
             sq.v[i].next.busy = false;
         }
+        lq.l.next = lq.r.next = sq.l.next = sq.r.next = 1;
         return;
     }
     fprintf(stderr, "LSQ : lq.size() = %d, sq.size() = %d, buf.valid = %d\n", lq.size(), sq.size(), buf.curr.valid);
@@ -129,7 +130,6 @@ void LSQ::move(LSQ_DMEM_Buffer &Dbuf, CDB_Broadcast_Buffer &Cbuf, const ROB_Comm
 }
 void LSQ::flush(){
     flushed.next = true;
-    lq.l.next = lq.r.next = sq.l.next = sq.r.next = 1;
     return;
 }
 void LSQ::tick(){

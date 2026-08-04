@@ -79,7 +79,7 @@ struct Queue{
         return l.curr == r.curr;
     }
     int nxt(int x){
-        return x == n + 1 ? 1 : x + 1;
+        return x == n ? 1 : x + 1;
     }
     bool full(){
         return l.curr == nxt(r.curr);

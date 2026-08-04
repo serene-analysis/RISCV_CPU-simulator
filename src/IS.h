@@ -65,6 +65,7 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
             if(inst.mem_read){
                 uint_32 ntag = 0, nqj = 0, nqk = 0;
                 rob.allocate(1, inst.rd, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), LSbuf.rob_tag = ntag;
+                fprintf(stderr, "rob_tag = %u\n", ntag);
                 if(buf.curr.inst == 0x0ff00513){
                     end_tag = ntag;
                 }
@@ -79,6 +80,7 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
                 assert(inst.mem_write);
                 uint_32 ntag = 0, nqj = 0, nqk = 0;
                 rob.allocate(1, inst.rd, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), LSbuf.rob_tag = ntag;
+                fprintf(stderr, "rob_tag = %u\n", ntag);
                 if(buf.curr.inst == 0x0ff00513){
                     end_tag = ntag;
                 }
@@ -101,6 +103,7 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
             if(inst.is_jump && inst.alu_src_a == 1){ // jal
                 uint_32 ntag = 0, nqj = 0, nqk = 0;
                 rob.allocate(1, inst.rd, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), Bbuf.rob_tag = ntag;
+                fprintf(stderr, "rob_tag = %u\n", ntag);
                 if(buf.curr.inst == 0x0ff00513){
                     end_tag = ntag;
                 }
@@ -114,6 +117,7 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
             else if(inst.is_jump){ // jalr
                 uint_32 ntag = 0, nqj = 0, nqk = 0;
                 rob.allocate(1, inst.rd, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), Bbuf.rob_tag = ntag;
+                fprintf(stderr, "rob_tag = %u\n", ntag);
                 if(buf.curr.inst == 0x0ff00513){
                     end_tag = ntag;
                 }
@@ -130,6 +134,7 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
             else{
                 uint_32 ntag = 0, nqj = 0, nqk = 0;
                 rob.allocate(1, 0, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), Bbuf.rob_tag = ntag;
+                fprintf(stderr, "rob_tag = %u\n", ntag);
                 if(buf.curr.inst == 0x0ff00513){
                     end_tag = ntag;
                 }
@@ -153,6 +158,7 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
             Abuf.imm = inst.imm, Abuf.PC = buf.curr.PC;
             uint_32 ntag = 0, nqj = 0, nqk = 0;
             rob.allocate(1, inst.rd, buf.curr.PC, false, 0, 0, ROBstall.next, ntag), Abuf.rob_tag = ntag;
+            fprintf(stderr, "rob_tag = %u\n", ntag);
             if(buf.curr.inst == 0x0ff00513){
                 end_tag = ntag;
                 fprintf(stderr, "\n\nend_tag appeared!\n\n\n");

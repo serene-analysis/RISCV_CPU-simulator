@@ -28,7 +28,7 @@ void ROB::allocate(const uint_8 &type, const uint_8 &rd, const uint_32 PC, const
 }
 void ROB::move(IF &If, IS &Is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU &Bu, DMEM &Dmem, CDB &Cdb, RegFile &Regfile, RAT &Rat, bool &ended, uint_32 &end_tag){
     if(flushed.curr){
-        qu.l.next = qu.r.next = qu.cnt.next = 1;
+        qu.l.next = qu.r.curr;
         return;
     }
     if(qu.empty()){
@@ -36,7 +36,7 @@ void ROB::move(IF &If, IS &Is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, 
     }
     ROBEntry fir = qu.front();
     if(fir.done){
-        fprintf(stderr, "\n\nfir.type = %u, l = %d, r = %d\n\n\n", uint_32(fir.type), qu.l.curr, qu.r.curr);
+        fprintf(stderr, "\n\nfir.type = %u, l = %d, r = %d, cnt = %d\n\n\n", uint_32(fir.type), qu.l.curr, qu.r.curr, qu.cnt.curr);
         if(fir.rob_tag == end_tag){
             ended = true;
             printf("%u\n", Regfile.reg[10].curr & 255u);

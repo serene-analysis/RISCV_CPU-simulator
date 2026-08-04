@@ -1,0 +1,1357 @@
+timestamp = 1
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 0, redirected = 0, stall = 0, foretold = 0
+normal, inst = 131383
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 31
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 2
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 131383 = 0x20137
+Arithmetic
+rob_tag = 2
+IF : PC.curr = 4, redirected = 0, stall = 0, foretold = 0
+normal, inst = 67113199
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 31
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 3
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 67113199 = 0x40010ef
+Branch
+rob_tag = 3
+IF : PC.curr = 8, redirected = 0, stall = 0, foretold = 0
+normal, inst = 267388179
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 1, qj = 0, qk = 0, op = 19, stalled = 0, bpos = 32, epos = 31
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 4
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 267388179 = 0xff00513
+Arithmetic
+rob_tag = 4
+
+
+end_tag appeared!
+
+
+IF : PC.curr = 12, redirected = 0, stall = 0, foretold = 0
+normal, inst = 198327
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 1, qj = 0, qk = 0, is_jump = 1, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 3
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 31, epos = 30
+ArithRS send {31, 0, 131072, 19} to ALU
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 5
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 198327 = 0x306b7
+Arithmetic
+rob_tag = 5
+IF : PC.curr = 16, redirected = 0, stall = 0, foretold = 0
+normal, inst = 10912291
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 31, epos = 30, rob_tag = 0
+ArithRS : got = 0, valid = 1, qj = 0, qk = 0, op = 10, stalled = 0, bpos = 32, epos = 31
+ALU : got = 0, valid = 1, bpos = 8, accepted = 0
+ALU_operation: va = 0, vb = 131072, type = 19
+timestamp = 6
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 10912291 = 0xa68223
+Memory
+rob_tag = 6
+IF : PC.curr = 20, redirected = 0, stall = 0, foretold = 0
+normal, inst = 4288671855
+BU : got = 0, valid = 1, bpos = 8, accepted = 0
+is_jump = 1, condition_met = 0, rob_tag = 3
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 1, valid = 1, qj = 0, qk = 0, op = 19, stalled = 0, bpos = 31, epos = 30
+ArithRS send {31, 0, 255, 10} to ALU
+ALU : got = 1, valid = 0, bpos = 7, accepted = 0
+timestamp = 7
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 1
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 4288671855 = 0xff9ff06f
+Branch
+rob_tag = 7
+IF : PC.curr = 24, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 1, valid = 0, bpos = 7, accepted = 0
+BU send to CDB : rob_tag = 3, actual_dest = 4164, mispredicted = 1, bpos = 7
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 30, epos = 31
+ArithRS send {30, 0, 196608, 19} to ALU
+ALU : got = 1, valid = 1, bpos = 7, accepted = 0
+ALU_operation: va = 0, vb = 255, type = 10
+timestamp = 8
+
+
+fir.type = 1, l = 1, r = 7, cnt = 7
+
+
+LSQ : lq.size() = 0, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 28, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 1, valid = 0, bpos = 7, accepted = 0
+BU send to CDB : rob_tag = 3, actual_dest = 4164, mispredicted = 1, bpos = 7
+BranchRS : got = 0, valid = 1, qj = 0, qk = 0, is_jump = 1, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 7
+ArithRS : got = 0, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 31
+ALU : got = 2, valid = 1, bpos = 7, accepted = 1
+ALU_operation: va = 0, vb = 196608, type = 19
+timestamp = 9
+
+
+fir.type = 2, l = 2, r = 7, cnt = 7
+
+
+rd = 1, value = 8, actual_dest = 4164, misjumped = 1
+LSQ : lq.size() = 0, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 32, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 1, valid = 0, bpos = 7, accepted = 1
+BU send to CDB : rob_tag = 3, actual_dest = 4164, mispredicted = 1, bpos = 7
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 31, epos = 30, rob_tag = 0
+ArithRS : got = 0, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 31
+ALU : got = 2, valid = 0, bpos = 6, accepted = 0
+timestamp = 10
+IS : flushed = 1, RSstall = 0, ROBstall = 0
+IF : PC.curr = 36, redirected = 1, stall = 0, foretold = 0
+timestamp = 11
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4164, redirected = 0, stall = 0, foretold = 0
+normal, inst = 4278255891
+BU : got = 0, valid = 0, bpos = 8, accepted = 1
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 31
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 12
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 4278255891 = 0xff010113
+Arithmetic
+rob_tag = 8
+IF : PC.curr = 4168, redirected = 0, stall = 0, foretold = 0
+normal, inst = 1123875
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 31
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 13
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 1123875 = 0x112623
+Memory
+rob_tag = 9
+IF : PC.curr = 4172, redirected = 0, stall = 0, foretold = 0
+normal, inst = 185599251
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 1, qj = 0, qk = 0, op = 10, stalled = 0, bpos = 32, epos = 31
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 14
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 1
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 185599251 = 0xb100513
+Arithmetic
+rob_tag = 10
+IF : PC.curr = 4176, redirected = 0, stall = 0, foretold = 0
+normal, inst = 4213174511
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 31, epos = 30
+ArithRS send {31, 131072, 4294967280, 10} to ALU
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 15
+LSQ : lq.size() = 0, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 4213174511 = 0xfb1ff0ef
+Branch
+rob_tag = 11
+IF : PC.curr = 4180, redirected = 0, stall = 0, foretold = 0
+normal, inst = 6071
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 1, qj = 0, qk = 0, op = 10, stalled = 0, bpos = 32, epos = 31
+ALU : got = 0, valid = 1, bpos = 8, accepted = 0
+ALU_operation: va = 131072, vb = 4294967280, type = 10
+timestamp = 16
+LSQ : lq.size() = 0, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 6071 = 0x17b7
+Arithmetic
+rob_tag = 12
+IF : PC.curr = 4184, redirected = 0, stall = 0, foretold = 0
+normal, inst = 113747203
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 1, qj = 0, qk = 0, is_jump = 1, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 11
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 31, epos = 30
+ArithRS send {31, 0, 177, 10} to ALU
+ALU : got = 1, valid = 0, bpos = 7, accepted = 0
+timestamp = 17
+LSQ : lq.size() = 0, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 113747203 = 0x6c7a503
+Memory
+rob_tag = 13
+IF : PC.curr = 4188, redirected = 0, stall = 0, foretold = 0
+normal, inst = 12656771
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 31, epos = 30, rob_tag = 0
+ArithRS : got = 0, valid = 1, qj = 0, qk = 0, op = 19, stalled = 0, bpos = 32, epos = 31
+ALU : got = 1, valid = 1, bpos = 7, accepted = 0
+ALU_operation: va = 0, vb = 177, type = 10
+timestamp = 18
+
+
+fir.type = 1, l = 7, r = 13, cnt = 13
+
+
+LSQ : lq.size() = 0, sq.size() = 1, buf.valid = 1
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 12656771 = 0xc12083
+Memory
+rob_tag = 14
+IF : PC.curr = 4192, redirected = 0, stall = 0, foretold = 0
+normal, inst = 16843027
+BU : got = 0, valid = 1, bpos = 8, accepted = 0
+is_jump = 1, condition_met = 0, rob_tag = 11
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 31, epos = 30
+ArithRS send {31, 0, 4096, 19} to ALU
+ALU : got = 2, valid = 0, bpos = 7, accepted = 1
+timestamp = 19
+LSQ : lq.size() = 1, sq.size() = 1, buf.valid = 1
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 16843027 = 0x1010113
+Arithmetic
+rob_tag = 15
+IF : PC.curr = 4196, redirected = 0, stall = 0, foretold = 0
+normal, inst = 32871
+BU : got = 1, valid = 0, bpos = 7, accepted = 0
+BU send to CDB : rob_tag = 11, actual_dest = 4096, mispredicted = 1, bpos = 7
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 31
+ALU : got = 1, valid = 1, bpos = 6, accepted = 1
+ALU_operation: va = 0, vb = 4096, type = 19
+timestamp = 20
+LSQ : lq.size() = 2, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 32871 = 0x8067
+Branch
+rob_tag = 16
+IF : PC.curr = 4200, redirected = 0, stall = 0, foretold = 0
+normal, inst = 253
+BU : got = 1, valid = 0, bpos = 7, accepted = 0
+BU send to CDB : rob_tag = 11, actual_dest = 4096, mispredicted = 1, bpos = 7
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 1, qj = 0, qk = 0, op = 10, stalled = 0, bpos = 32, epos = 31
+ALU : got = 2, valid = 0, bpos = 7, accepted = 1
+timestamp = 21
+LSQ : lq.size() = 2, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 253 = 0xfd
+Arithmetic
+rob_tag = 17
+IF : PC.curr = 4204, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 1, valid = 0, bpos = 7, accepted = 1
+BU send to CDB : rob_tag = 11, actual_dest = 4096, mispredicted = 1, bpos = 7
+BranchRS : got = 0, valid = 1, qj = 14, qk = 0, is_jump = 1, is_jalr = 1, stalled = 0, bpos = 32, epos = 31, rob_tag = 16
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 31, epos = 30
+ArithRS send {31, 131056, 16, 10} to ALU
+ALU : got = 1, valid = 0, bpos = 6, accepted = 0
+timestamp = 22
+LSQ : lq.size() = 2, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4208, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 1
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 0, valid = 1, qj = 16, qk = 16, op = 0, stalled = 0, bpos = 32, epos = 31
+ALU : got = 1, valid = 1, bpos = 6, accepted = 0
+ALU_operation: va = 131056, vb = 16, type = 10
+timestamp = 23
+LSQ : lq.size() = 2, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4212, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 1
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 2, valid = 0, bpos = 7, accepted = 0
+timestamp = 24
+LSQ : lq.size() = 2, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4216, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 2, valid = 0, bpos = 7, accepted = 1
+timestamp = 25
+
+
+fir.type = 3, l = 8, r = 17, cnt = 17
+
+
+remaining_round = 3
+LSQ : lq.size() = 2, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4220, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 1, valid = 0, bpos = 7, accepted = 0
+timestamp = 26
+
+
+fir.type = 3, l = 8, r = 17, cnt = 17
+
+
+remaining_round = 2
+LSQ : lq.size() = 2, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4224, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 1, valid = 0, bpos = 7, accepted = 0
+timestamp = 27
+
+
+fir.type = 3, l = 8, r = 17, cnt = 17
+
+
+remaining_round = 1
+LSQ : lq.size() = 2, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4228, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 1, valid = 0, bpos = 7, accepted = 0
+timestamp = 28
+
+
+fir.type = 3, l = 8, r = 17, cnt = 17
+
+
+remaining_round = 0
+LSQ : lq.size() = 2, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4232, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 1, valid = 0, bpos = 7, accepted = 0
+timestamp = 29
+
+
+fir.type = 1, l = 9, r = 17, cnt = 17
+
+
+LSQ : lq.size() = 2, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4236, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 1, valid = 0, bpos = 7, accepted = 0
+timestamp = 30
+
+
+fir.type = 2, l = 10, r = 17, cnt = 17
+
+
+rd = 1, value = 4180, actual_dest = 4096, misjumped = 1
+LSQ : lq.size() = 2, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4240, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 1, valid = 0, bpos = 7, accepted = 0
+timestamp = 31
+IS : flushed = 1, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4244, redirected = 1, stall = 0, foretold = 0
+timestamp = 32
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4096, redirected = 0, stall = 0, foretold = 0
+normal, inst = 5943
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 31
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 33
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 5943 = 0x1737
+Arithmetic
+rob_tag = 18
+IF : PC.curr = 4100, redirected = 0, stall = 0, foretold = 0
+normal, inst = 113715075
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 31
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 34
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 113715075 = 0x6c72783
+Memory
+rob_tag = 19
+IF : PC.curr = 4104, redirected = 0, stall = 0, foretold = 0
+normal, inst = 16074035
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 1, qj = 0, qk = 0, op = 19, stalled = 0, bpos = 32, epos = 31
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 35
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 1
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 16074035 = 0xf54533
+Arithmetic
+rob_tag = 20
+IF : PC.curr = 4108, redirected = 0, stall = 0, foretold = 0
+normal, inst = 181732627
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 31, epos = 30
+ArithRS send {31, 0, 4096, 19} to ALU
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 36
+LSQ : lq.size() = 1, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 181732627 = 0xad50513
+Arithmetic
+rob_tag = 21
+IF : PC.curr = 4112, redirected = 0, stall = 0, foretold = 0
+normal, inst = 111617571
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 1, qj = 0, qk = 19, op = 4, stalled = 0, bpos = 32, epos = 31
+ALU : got = 0, valid = 1, bpos = 8, accepted = 0
+ALU_operation: va = 0, vb = 4096, type = 19
+timestamp = 37
+LSQ : lq.size() = 1, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 111617571 = 0x6a72623
+Memory
+rob_tag = 22
+IF : PC.curr = 4116, redirected = 0, stall = 0, foretold = 0
+normal, inst = 32871
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 1, valid = 1, qj = 20, qk = 0, op = 10, stalled = 0, bpos = 32, epos = 30
+ALU : got = 1, valid = 0, bpos = 7, accepted = 0
+timestamp = 38
+LSQ : lq.size() = 1, sq.size() = 0, buf.valid = 1
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 32871 = 0x8067
+Branch
+rob_tag = 23
+IF : PC.curr = 4120, redirected = 0, stall = 0, foretold = 0
+normal, inst = 345987
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 2, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 29
+ALU : got = 1, valid = 0, bpos = 7, accepted = 0
+timestamp = 39
+
+
+fir.type = 1, l = 17, r = 23, cnt = 23
+
+
+LSQ : lq.size() = 1, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 345987 = 0x54783
+Memory
+rob_tag = 24
+IF : PC.curr = 4124, redirected = 0, stall = 0, foretold = 0
+normal, inst = 34046563
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 1, qj = 0, qk = 0, is_jump = 1, is_jalr = 1, stalled = 0, bpos = 32, epos = 31, rob_tag = 23
+ArithRS : got = 2, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 29
+ALU : got = 1, valid = 0, bpos = 7, accepted = 1
+timestamp = 40
+LSQ : lq.size() = 1, sq.size() = 1, buf.valid = 1
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 34046563 = 0x2078263
+Branch
+rob_tag = 25
+IF : PC.curr = 4128, redirected = 0, stall = 0, foretold = 0
+normal, inst = 5943
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 2, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 29
+ALU : got = 0, valid = 0, bpos = 8, accepted = 1
+timestamp = 41
+LSQ : lq.size() = 2, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 5943 = 0x1737
+Arithmetic
+rob_tag = 26
+IF : PC.curr = 4132, redirected = 0, stall = 0, foretold = 0
+normal, inst = 113714819
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 1, qj = 24, qk = 23, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 31, epos = 30, rob_tag = 25
+ArithRS : got = 2, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 29
+ALU : got = 0, valid = 0, bpos = 8, accepted = 1
+timestamp = 42
+LSQ : lq.size() = 2, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 113714819 = 0x6c72683
+Memory
+rob_tag = 27
+IF : PC.curr = 4136, redirected = 0, stall = 0, foretold = 0
+normal, inst = 14141363
+BU : got = 0, valid = 1, bpos = 8, accepted = 0
+is_jump = 1, condition_met = 0, rob_tag = 23
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 2, valid = 1, qj = 23, qk = 0, op = 19, stalled = 0, bpos = 32, epos = 29
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 43
+LSQ : lq.size() = 1, sq.size() = 1, buf.valid = 1
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 14141363 = 0xd7c7b3
+Arithmetic
+rob_tag = 28
+IF : PC.curr = 4140, redirected = 0, stall = 0, foretold = 0
+normal, inst = 546801555
+BU : got = 1, valid = 0, bpos = 7, accepted = 0
+BU send to CDB : rob_tag = 23, actual_dest = 4180, mispredicted = 1, bpos = 7
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 3, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 28
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 44
+LSQ : lq.size() = 2, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 546801555 = 0x20978793
+Arithmetic
+rob_tag = 29
+IF : PC.curr = 4144, redirected = 0, stall = 0, foretold = 0
+normal, inst = 116860451
+BU : got = 1, valid = 0, bpos = 7, accepted = 0
+BU send to CDB : rob_tag = 23, actual_dest = 4180, mispredicted = 1, bpos = 7
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 3, valid = 1, qj = 24, qk = 27, op = 4, stalled = 0, bpos = 32, epos = 28
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 45
+LSQ : lq.size() = 2, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 116860451 = 0x6f72623
+Memory
+rob_tag = 30
+IF : PC.curr = 4148, redirected = 0, stall = 0, foretold = 0
+normal, inst = 1377555
+BU : got = 1, valid = 0, bpos = 7, accepted = 1
+BU send to CDB : rob_tag = 23, actual_dest = 4180, mispredicted = 1, bpos = 7
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 4, valid = 1, qj = 28, qk = 0, op = 10, stalled = 0, bpos = 32, epos = 27
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 46
+LSQ : lq.size() = 2, sq.size() = 1, buf.valid = 1
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 1377555 = 0x150513
+Arithmetic
+rob_tag = 31
+IF : PC.curr = 4152, redirected = 0, stall = 0, foretold = 0
+normal, inst = 345987
+BU : got = 0, valid = 0, bpos = 8, accepted = 1
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 5, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 26
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 47
+LSQ : lq.size() = 2, sq.size() = 2, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 345987 = 0x54783
+Memory
+rob_tag = 32
+IF : PC.curr = 4156, redirected = 0, stall = 0, foretold = 0
+normal, inst = 4261909731
+BU : got = 0, valid = 0, bpos = 8, accepted = 1
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 5, valid = 1, qj = 21, qk = 0, op = 10, stalled = 0, bpos = 32, epos = 26
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 48
+LSQ : lq.size() = 2, sq.size() = 2, buf.valid = 1
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 4261909731 = 0xfe0794e3
+Branch
+rob_tag = 33
+IF : PC.curr = 4160, redirected = 0, stall = 0, foretold = 0
+normal, inst = 32871
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 6, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 25
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 49
+
+
+fir.type = 3, l = 18, r = 1, cnt = 33
+
+
+LSQ : lq.size() = 3, sq.size() = 2, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 32871 = 0x8067
+Branch
+rob_tag = 34
+IF : PC.curr = 4164, redirected = 0, stall = 0, foretold = 0
+normal, inst = 4278255891
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 1, qj = 32, qk = 23, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 33
+ArithRS : got = 6, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 25
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 50
+LSQ : lq.size() = 3, sq.size() = 2, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 4278255891 = 0xff010113
+Arithmetic
+rob_tag = 35
+IF : PC.curr = 4168, redirected = 0, stall = 0, foretold = 0
+normal, inst = 1123875
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 2, valid = 1, qj = 0, qk = 0, is_jump = 1, is_jalr = 1, stalled = 0, bpos = 32, epos = 29, rob_tag = 34
+ArithRS : got = 6, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 25
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 51
+LSQ : lq.size() = 3, sq.size() = 2, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 1123875 = 0x112623
+Memory
+rob_tag = 36
+IF : PC.curr = 4172, redirected = 0, stall = 0, foretold = 0
+normal, inst = 185599251
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 3, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 28, rob_tag = 0
+ArithRS : got = 6, valid = 1, qj = 0, qk = 0, op = 10, stalled = 0, bpos = 31, epos = 25
+ArithRS send {31, 177, 0, 4} to ALU
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 52
+LSQ : lq.size() = 3, sq.size() = 2, buf.valid = 1
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 185599251 = 0xb100513
+Arithmetic
+rob_tag = 37
+IF : PC.curr = 4176, redirected = 0, stall = 0, foretold = 0
+normal, inst = 4213174511
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 3, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 29, epos = 28, rob_tag = 0
+ArithRS : got = 6, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 25, epos = 31
+ArithRS send {25, 131056, 4294967280, 10} to ALU
+ALU : got = 0, valid = 1, bpos = 8, accepted = 0
+ALU_operation: va = 177, vb = 0, type = 4
+timestamp = 53
+LSQ : lq.size() = 3, sq.size() = 3, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 4213174511 = 0xfb1ff0ef
+Branch
+rob_tag = 38
+IF : PC.curr = 4180, redirected = 0, stall = 0, foretold = 0
+normal, inst = 6071
+BU : got = 0, valid = 1, bpos = 8, accepted = 0
+is_jump = 1, condition_met = 0, rob_tag = 34
+BranchRS : got = 2, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 29, rob_tag = 0
+ArithRS : got = 5, valid = 1, qj = 34, qk = 0, op = 10, stalled = 0, bpos = 32, epos = 31
+ALU : got = 1, valid = 1, bpos = 7, accepted = 0
+ALU_operation: va = 131056, vb = 4294967280, type = 10
+timestamp = 54
+LSQ : lq.size() = 3, sq.size() = 3, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 6071 = 0x17b7
+Arithmetic
+rob_tag = 39
+IF : PC.curr = 4184, redirected = 0, stall = 0, foretold = 0
+normal, inst = 113747203
+BU : got = 1, valid = 0, bpos = 7, accepted = 0
+BU send to CDB : rob_tag = 34, actual_dest = 4180, mispredicted = 1, bpos = 7
+BranchRS : got = 2, valid = 1, qj = 0, qk = 0, is_jump = 1, is_jalr = 0, stalled = 0, bpos = 32, epos = 29, rob_tag = 38
+ArithRS : got = 6, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 25
+ALU : got = 2, valid = 0, bpos = 7, accepted = 0
+timestamp = 55
+
+
+fir.type = 1, l = 19, r = 7, cnt = 39
+
+
+LSQ : lq.size() = 3, sq.size() = 3, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 113747203 = 0x6c7a503
+Memory
+rob_tag = 40
+IF : PC.curr = 4188, redirected = 0, stall = 0, foretold = 0
+normal, inst = 12656771
+BU : got = 1, valid = 0, bpos = 7, accepted = 0
+BU send to CDB : rob_tag = 34, actual_dest = 4180, mispredicted = 1, bpos = 7
+BranchRS : got = 3, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 29, epos = 28, rob_tag = 0
+ArithRS : got = 6, valid = 1, qj = 34, qk = 0, op = 19, stalled = 0, bpos = 32, epos = 25
+ALU : got = 2, valid = 0, bpos = 7, accepted = 1
+timestamp = 56
+LSQ : lq.size() = 3, sq.size() = 3, buf.valid = 1
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 12656771 = 0xc12083
+Memory
+rob_tag = 41
+IF : PC.curr = 4192, redirected = 0, stall = 0, foretold = 0
+normal, inst = 16843027
+BU : got = 1, valid = 1, bpos = 7, accepted = 1
+is_jump = 1, condition_met = 0, rob_tag = 38
+BU send to CDB : rob_tag = 34, actual_dest = 4180, mispredicted = 1, bpos = 7
+BranchRS : got = 2, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 29, rob_tag = 0
+ArithRS : got = 7, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 24
+ALU : got = 1, valid = 0, bpos = 6, accepted = 0
+timestamp = 57
+LSQ : lq.size() = 4, sq.size() = 3, buf.valid = 1
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 16843027 = 0x1010113
+Arithmetic
+rob_tag = 42
+IF : PC.curr = 4196, redirected = 0, stall = 0, foretold = 0
+normal, inst = 32871
+BU : got = 1, valid = 0, bpos = 6, accepted = 1
+BU send to CDB : rob_tag = 38, actual_dest = 4096, mispredicted = 1, bpos = 6
+BranchRS : got = 2, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 29, rob_tag = 0
+ArithRS : got = 7, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 30, epos = 24
+ArithRS send {30, 177, 173, 10} to ALU
+ALU : got = 1, valid = 0, bpos = 6, accepted = 0
+timestamp = 58
+LSQ : lq.size() = 5, sq.size() = 3, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 32871 = 0x8067
+Branch
+rob_tag = 43
+IF : PC.curr = 4200, redirected = 0, stall = 0, foretold = 0
+normal, inst = 253
+BU : got = 1, valid = 0, bpos = 6, accepted = 1
+BU send to CDB : rob_tag = 38, actual_dest = 4096, mispredicted = 1, bpos = 6
+BranchRS : got = 2, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 29, rob_tag = 0
+ArithRS : got = 6, valid = 1, qj = 35, qk = 0, op = 10, stalled = 0, bpos = 32, epos = 30
+ALU : got = 1, valid = 1, bpos = 6, accepted = 0
+ALU_operation: va = 177, vb = 173, type = 10
+timestamp = 59
+LSQ : lq.size() = 5, sq.size() = 3, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 253 = 0xfd
+Arithmetic
+rob_tag = 44
+IF : PC.curr = 4204, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 1, valid = 0, bpos = 6, accepted = 1
+BU send to CDB : rob_tag = 38, actual_dest = 4096, mispredicted = 1, bpos = 6
+BranchRS : got = 2, valid = 1, qj = 41, qk = 0, is_jump = 1, is_jalr = 1, stalled = 0, bpos = 32, epos = 29, rob_tag = 43
+ArithRS : got = 7, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 24
+ALU : got = 2, valid = 0, bpos = 7, accepted = 0
+timestamp = 60
+LSQ : lq.size() = 5, sq.size() = 3, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4208, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 1
+BranchRS : got = 3, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 28, rob_tag = 0
+ArithRS : got = 7, valid = 1, qj = 43, qk = 43, op = 0, stalled = 0, bpos = 32, epos = 24
+ALU : got = 2, valid = 0, bpos = 7, accepted = 0
+timestamp = 61
+LSQ : lq.size() = 5, sq.size() = 3, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4212, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 1
+BranchRS : got = 3, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 28, rob_tag = 0
+ArithRS : got = 8, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 23
+ALU : got = 2, valid = 0, bpos = 7, accepted = 0
+timestamp = 62
+
+
+fir.type = 1, l = 20, r = 12, cnt = 44
+
+
+LSQ : lq.size() = 5, sq.size() = 3, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4216, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 3, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 28, rob_tag = 0
+ArithRS : got = 8, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 23
+ALU : got = 2, valid = 0, bpos = 7, accepted = 1
+timestamp = 63
+LSQ : lq.size() = 5, sq.size() = 3, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4220, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 3, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 28, rob_tag = 0
+ArithRS : got = 8, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 23
+ALU : got = 1, valid = 0, bpos = 6, accepted = 1
+timestamp = 64
+LSQ : lq.size() = 5, sq.size() = 3, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4224, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 3, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 28, rob_tag = 0
+ArithRS : got = 8, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 26, epos = 23
+ArithRS send {26, 350, 1, 10} to ALU
+ALU : got = 1, valid = 0, bpos = 6, accepted = 1
+timestamp = 65
+LSQ : lq.size() = 5, sq.size() = 3, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4228, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 3, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 28, rob_tag = 0
+ArithRS : got = 7, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 26
+ALU : got = 1, valid = 1, bpos = 6, accepted = 1
+ALU_operation: va = 350, vb = 1, type = 10
+timestamp = 66
+LSQ : lq.size() = 5, sq.size() = 3, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4232, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 3, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 28, rob_tag = 0
+ArithRS : got = 7, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 26
+ALU : got = 1, valid = 0, bpos = 7, accepted = 1
+timestamp = 67
+LSQ : lq.size() = 5, sq.size() = 3, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4236, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 3, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 28, rob_tag = 0
+ArithRS : got = 7, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 26
+ALU : got = 1, valid = 0, bpos = 7, accepted = 1
+timestamp = 68
+LSQ : lq.size() = 5, sq.size() = 3, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4240, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 3, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 28, rob_tag = 0
+ArithRS : got = 7, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 26
+ALU : got = 1, valid = 0, bpos = 7, accepted = 1
+timestamp = 69
+
+
+fir.type = 3, l = 21, r = 12, cnt = 44
+
+
+remaining_round = 3
+LSQ : lq.size() = 5, sq.size() = 3, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4244, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 3, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 28, rob_tag = 0
+ArithRS : got = 7, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 26
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 70
+
+
+fir.type = 3, l = 21, r = 12, cnt = 44
+
+
+remaining_round = 2
+LSQ : lq.size() = 5, sq.size() = 3, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4248, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 3, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 28, rob_tag = 0
+ArithRS : got = 7, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 26
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 71
+
+
+fir.type = 3, l = 21, r = 12, cnt = 44
+
+
+remaining_round = 1
+LSQ : lq.size() = 5, sq.size() = 3, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4252, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 3, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 28, rob_tag = 0
+ArithRS : got = 7, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 26
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 72
+
+
+fir.type = 3, l = 21, r = 12, cnt = 44
+
+
+remaining_round = 0
+LSQ : lq.size() = 5, sq.size() = 3, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4256, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 3, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 28, rob_tag = 0
+ArithRS : got = 7, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 26
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 73
+
+
+fir.type = 2, l = 22, r = 12, cnt = 44
+
+
+rd = 0, value = 4120, actual_dest = 4180, misjumped = 1
+LSQ : lq.size() = 5, sq.size() = 3, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4260, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 3, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 28, rob_tag = 0
+ArithRS : got = 7, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 26
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 74
+IS : flushed = 1, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4264, redirected = 1, stall = 0, foretold = 0
+timestamp = 75
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4180, redirected = 0, stall = 0, foretold = 0
+normal, inst = 6071
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 31
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 76
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 6071 = 0x17b7
+Arithmetic
+rob_tag = 45
+IF : PC.curr = 4184, redirected = 0, stall = 0, foretold = 0
+normal, inst = 113747203
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 31
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 77
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 113747203 = 0x6c7a503
+Memory
+rob_tag = 46
+IF : PC.curr = 4188, redirected = 0, stall = 0, foretold = 0
+normal, inst = 12656771
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 1, qj = 0, qk = 0, op = 19, stalled = 0, bpos = 32, epos = 31
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 78
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 1
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 12656771 = 0xc12083
+Memory
+rob_tag = 47
+IF : PC.curr = 4192, redirected = 0, stall = 0, foretold = 0
+normal, inst = 16843027
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 31, epos = 30
+ArithRS send {31, 0, 4096, 19} to ALU
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 79
+LSQ : lq.size() = 1, sq.size() = 0, buf.valid = 1
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 16843027 = 0x1010113
+Arithmetic
+rob_tag = 48
+IF : PC.curr = 4196, redirected = 0, stall = 0, foretold = 0
+normal, inst = 32871
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 31
+ALU : got = 0, valid = 1, bpos = 8, accepted = 0
+ALU_operation: va = 0, vb = 4096, type = 19
+timestamp = 80
+LSQ : lq.size() = 2, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 32871 = 0x8067
+Branch
+rob_tag = 49
+IF : PC.curr = 4200, redirected = 0, stall = 0, foretold = 0
+normal, inst = 253
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 1, qj = 0, qk = 0, op = 10, stalled = 0, bpos = 32, epos = 31
+ALU : got = 1, valid = 0, bpos = 7, accepted = 0
+timestamp = 81
+LSQ : lq.size() = 2, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 253 = 0xfd
+Arithmetic
+rob_tag = 50
+IF : PC.curr = 4204, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 1, qj = 47, qk = 0, is_jump = 1, is_jalr = 1, stalled = 0, bpos = 32, epos = 31, rob_tag = 49
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 31, epos = 30
+ArithRS send {31, 131056, 16, 10} to ALU
+ALU : got = 1, valid = 0, bpos = 7, accepted = 0
+timestamp = 82
+
+
+fir.type = 1, l = 12, r = 18, cnt = 50
+
+
+LSQ : lq.size() = 2, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4208, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 0, valid = 1, qj = 49, qk = 49, op = 0, stalled = 0, bpos = 32, epos = 31
+ALU : got = 1, valid = 1, bpos = 7, accepted = 1
+ALU_operation: va = 131056, vb = 16, type = 10
+timestamp = 83
+LSQ : lq.size() = 2, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4212, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 1, valid = 0, bpos = 6, accepted = 1
+timestamp = 84
+LSQ : lq.size() = 2, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4216, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 1, valid = 0, bpos = 6, accepted = 1
+timestamp = 85
+LSQ : lq.size() = 2, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4220, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 1, valid = 0, bpos = 6, accepted = 1
+timestamp = 86
+LSQ : lq.size() = 1, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4224, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 0, valid = 0, bpos = 8, accepted = 1
+timestamp = 87
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4228, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 0, valid = 0, bpos = 8, accepted = 1
+timestamp = 88
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4232, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 89
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4236, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 90
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4240, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 91
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4244, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 92
+
+
+fir.type = 3, l = 13, r = 18, cnt = 50
+
+
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4248, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 93
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4252, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 94
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4256, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 95
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4260, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 96
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4264, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 97
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4268, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 98
+
+
+fir.type = 3, l = 14, r = 18, cnt = 50
+
+
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4272, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 99
+
+
+fir.type = 1, l = 15, r = 18, cnt = 50
+
+
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4276, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 100
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4280, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 101
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4284, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 31, epos = 30, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 102
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4288, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 1, bpos = 8, accepted = 0
+is_jump = 1, condition_met = 0, rob_tag = 49
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 103
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4292, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 1, valid = 0, bpos = 7, accepted = 0
+BU send to CDB : rob_tag = 49, actual_dest = 8, mispredicted = 1, bpos = 7
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 104
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4296, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 1, valid = 0, bpos = 7, accepted = 0
+BU send to CDB : rob_tag = 49, actual_dest = 8, mispredicted = 1, bpos = 7
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 105
+
+
+fir.type = 2, l = 16, r = 18, cnt = 50
+
+
+rd = 0, value = 4200, actual_dest = 8, misjumped = 1
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4300, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 1, valid = 0, bpos = 7, accepted = 1
+BU send to CDB : rob_tag = 49, actual_dest = 8, mispredicted = 1, bpos = 7
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 30
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 106
+IS : flushed = 1, RSstall = 0, ROBstall = 0
+IF : PC.curr = 4304, redirected = 1, stall = 0, foretold = 0
+timestamp = 107
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 8, redirected = 0, stall = 0, foretold = 0
+normal, inst = 267388179
+BU : got = 0, valid = 0, bpos = 8, accepted = 1
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 31
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 108
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 267388179 = 0xff00513
+Arithmetic
+rob_tag = 51
+
+
+end_tag appeared!
+
+
+IF : PC.curr = 12, redirected = 0, stall = 0, foretold = 0
+normal, inst = 198327
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 31
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 109
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 198327 = 0x306b7
+Arithmetic
+rob_tag = 52
+IF : PC.curr = 16, redirected = 0, stall = 0, foretold = 0
+normal, inst = 10912291
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 1, qj = 0, qk = 0, op = 10, stalled = 0, bpos = 32, epos = 31
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 110
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 10912291 = 0xa68223
+Memory
+rob_tag = 53
+IF : PC.curr = 20, redirected = 0, stall = 0, foretold = 0
+normal, inst = 4288671855
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 1, valid = 1, qj = 0, qk = 0, op = 19, stalled = 0, bpos = 31, epos = 30
+ArithRS send {31, 0, 255, 10} to ALU
+ALU : got = 0, valid = 0, bpos = 8, accepted = 0
+timestamp = 111
+LSQ : lq.size() = 0, sq.size() = 0, buf.valid = 1
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+valid, inst = 4288671855 = 0xff9ff06f
+Branch
+rob_tag = 54
+IF : PC.curr = 24, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 1, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 30, epos = 31
+ArithRS send {30, 0, 196608, 19} to ALU
+ALU : got = 0, valid = 1, bpos = 8, accepted = 0
+ALU_operation: va = 0, vb = 255, type = 10
+timestamp = 112
+LSQ : lq.size() = 0, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 28, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 0, valid = 1, qj = 0, qk = 0, is_jump = 1, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 54
+ArithRS : got = 0, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 31
+ALU : got = 1, valid = 1, bpos = 7, accepted = 0
+ALU_operation: va = 0, vb = 196608, type = 19
+timestamp = 113
+LSQ : lq.size() = 0, sq.size() = 1, buf.valid = 0
+IS : flushed = 0, RSstall = 0, ROBstall = 0
+IF : PC.curr = 32, redirected = 0, stall = 0, foretold = 0
+normal, inst = 0
+BU : got = 0, valid = 0, bpos = 8, accepted = 0
+BranchRS : got = 1, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 31, epos = 30, rob_tag = 0
+ArithRS : got = 0, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 31
+ALU : got = 2, valid = 0, bpos = 7, accepted = 0
+timestamp = 114
+
+
+fir.type = 1, l = 18, r = 22, cnt = 54
+
+
+LSQ : lq.size() = 0, sq.size() = 1, buf.valid = 0
+BU : got = 0, valid = 1, bpos = 8, accepted = 0
+is_jump = 1, condition_met = 0, rob_tag = 54
+BranchRS : got = 0, valid = 0, qj = 0, qk = 0, is_jump = 0, is_jalr = 0, stalled = 0, bpos = 32, epos = 31, rob_tag = 0
+ArithRS : got = 0, valid = 0, qj = 0, qk = 0, op = 0, stalled = 0, bpos = 32, epos = 31
+ALU : got = 2, valid = 0, bpos = 7, accepted = 1

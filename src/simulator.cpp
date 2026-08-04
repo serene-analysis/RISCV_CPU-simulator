@@ -19,7 +19,7 @@
 signed main(){
     #ifndef ONLINE_JUDGE
     setbuf(stderr, NULL);
-    //freopen("err.out","w",stderr);
+    freopen("err.out","w",stderr);
     #endif
     ALU alu;
     ArithRS ars;
@@ -41,8 +41,8 @@ signed main(){
     int timestamp = 0;
     bool ended = false, always = false;
     uint_32 end_tag = 0;
-    while(!ended && (timestamp < 40 || always)){
-        printf("timestamp = %d\n", ++timestamp);
+    while(!ended && (timestamp < 400 || always)){
+        fprintf(stderr, "timestamp = %d\n", ++timestamp);
         rob.move(If, is, ars, brs, lsq, alu, bu, dmem, cdb, rf, rat, ended, end_tag);
         lsq.move(dmem.buf.next, cdb.Cbuf.curr, rob.Rbuf.curr, is.RSstall.next);
         if(ended == false){
