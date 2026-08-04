@@ -20,9 +20,9 @@ void BranchRS::move(BranchRS_BU_Buffer &Bbuf, CDB_Broadcast_Buffer &Cbuf, bool &
                 ent[i].next.qk = 0;
                 ent[i].next.vk = Cbuf.result;
             }
-            if(ent[i].curr.qj == 0 && ent[i].curr.qk == 0 && ent[i].curr.is_jalr && ent[i].curr.jump_dest == 0){
-                ent[i].next.jump_dest = ent[i].curr.vj + ent[i].curr.imm; // Need an adder
-            }
+        }
+        if(ent[i].curr.busy && ent[i].curr.qj == 0 && ent[i].curr.qk == 0 && ent[i].curr.is_jalr && ent[i].curr.jump_dest == 0){
+            ent[i].next.jump_dest = ent[i].curr.vj + ent[i].curr.imm; // Need an adder
         }
         if(ent[i].curr.busy){
             got++;
