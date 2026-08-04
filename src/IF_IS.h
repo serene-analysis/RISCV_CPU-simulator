@@ -49,6 +49,7 @@ void IF_IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffe
         PC.next = PC.curr;
     }
     else{
+        //fprintf(stderr, "PC.curr = %u\n", PC.curr);
         uint_32 inst = conv.fetch_instruction(PC.curr);
         PC.next = PC.curr + 4; // Need an adder
         bvalid = (inst != 0);
@@ -125,6 +126,8 @@ void IF_IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffe
                 Bbuf.nojump_dest = bPC + 4;
                 Bbuf.jump_dest = bPC + inst.imm;
                 Bbuf.PC = bPC;
+                //Bbuf.predicted_jump = true;
+                //PC.next = bPC + inst.imm; // Need an adder
             }
             else if(inst.is_jump){ // jalr
                 uint_32 ntag = 0, nqj = 0, nqk = 0;
@@ -133,14 +136,20 @@ void IF_IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffe
                     end_tag = ntag;
                 }
                 rat.query(inst.rs1, nqj), Bbuf.qj = nqj;
+                uint_32 memvj = 0;
                 if(!nqj){
-                    regfile.read(inst.rs1, Bbuf.vj);
+                    regfile.read(inst.rs1, memvj);
+                    Bbuf.vj = memvj;
                 }
                 Bbuf.vk = inst.imm, Bbuf.qk = 0;
                 rat.mark(inst.rd, ntag);
                 Bbuf.nojump_dest = bPC + 4;
                 Bbuf.jump_dest = 0;
                 Bbuf.PC = bPC;
+                //if(!nqj){
+                //    Bbuf.predicted_jump = true;
+                //    PC.next = memvj + inst.imm; // Need an adder
+                //}
             }
             else{
                 uint_32 ntag = 0, nqj = 0, nqk = 0;

@@ -36,6 +36,7 @@ void ROB::move(IF_IS &If_is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU
     }
     ROBEntry fir = qu.front();
     if(fir.done){
+        //fprintf(stderr, "fir.type = %u\n", fir.type);
         if(fir.rob_tag == end_tag){
             ended = true;
             printf("%u\n", Regfile.reg[10].curr & 255u);
@@ -53,9 +54,13 @@ void ROB::move(IF_IS &If_is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU
             Regfile.write(fir.rd, fir.value);
             Rat.unlock(fir.rd, fir.rob_tag);
             if(fir.branch_misjumped){
+                //fprintf(stderr, "misjumped\n");
                 If_is.flush(), Ars.flush(), Brs.flush(), Lsq.flush(), Alu.flush(), Bu.flush(), Dmem.flush(), Cdb.flush(), Rat.flush(), flush();
                 If_is.redirected.next = true;
                 If_is.redirected_PC.next = fir.actual_dest;
+            }
+            else{
+                //fprintf(stderr, "not misjumped\n");
             }
             qu.pop();
         }

@@ -9,7 +9,7 @@
 #include "converter.h"
 #include "decoder.h"
 #include "DMEM.h"
-#include "IS.h"
+#include "IF_IS.h"
 #include "LSQ.h"
 #include "RAT.h"
 #include "RegFile.h"
@@ -68,6 +68,6 @@ signed main(){
     return 0;
 }
 /*
-src 文件夹下实现了一个 RISCV CPU 的 C++ 模拟器，使用的是五级流水 Tomasulo，请你为这份代码 debug。上层的 README.md 有具体的要求，data 下有样例和测试数据（.dump 文件，.c 文件的末尾有注释标明的标准答案）。先不管所有附加要求，先把输出调对，然后再考虑别的。在所有作出修改的地方用注释标明。如果有拿不准为什么这么写的，要向我提问。
-我之前写过一个串行的暴力实现，所以 Decoder 部分、ALU 的具体判断部分无需检查。
+src 文件夹下实现了一个 RISCV CPU 的 C++ 模拟器，使用的是五级流水 Tomasulo，上层的 README.md 有具体的要求，data 下有样例和测试数据（.dump 文件，.c 文件的末尾有注释标明的标准答案）。
+这份代码已经是正确的了，但跑得太慢，我试图加入分支预测，但当我去掉 IF_IS.h 里面对无条件跳转的判断时，我连样例都过不去了。为什么呢？
 */
