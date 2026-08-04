@@ -21,13 +21,13 @@ struct DMEM{
             }
             return;
         }
-        uint_32 got = 0, epos = Memsize_, bpos = Memsize_;
+        uint_32 got = 0, epos = Memsize_, bpos = Memsize_, skipid = Memsize_;
         if(accepted.curr && mem[submitted_id.curr].curr.rob_tag == sent_tag[submitted_id.curr]){ 
-            mem[submitted_id.curr].curr.valid = false;
+            skipid = submitted_id.curr;
             mem[submitted_id.curr].next.valid = false;
         }
         for(int i=0;i<Memsize_;i++){
-            if(mem[i].curr.valid){
+            if(mem[i].curr.valid && i != skipid){
                 got++;
                 if(bpos == Memsize_ || mem[i].curr.rob_tag < mem[bpos].curr.rob_tag){ 
                     bpos = i;

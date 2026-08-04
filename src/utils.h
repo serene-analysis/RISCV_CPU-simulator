@@ -151,6 +151,10 @@ struct ArithRSEntry{
 struct RATEntry{
     bool busy = false;
     uint_32 rob_tag = 0;
+    bool locked = false;
+    uint_32 lock_id = 0;
+    bool unlocked = false;
+    u_char unlock_id = 0;
 };
 struct RAT{
     const static int EntrySize_ = 32;

@@ -27,7 +27,6 @@ void IF_IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffe
         PC.next = PC.curr;
     }
     else{
-        
         uint_32 inst = conv.fetch_instruction(PC.curr);
         PC.next = PC.curr + 4; 
         bvalid = (inst != 0);

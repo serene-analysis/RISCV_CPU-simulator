@@ -59,7 +59,7 @@ void LSQ::move(LSQ_DMEM_Buffer &Dbuf, CDB_Broadcast_Buffer &Cbuf, const ROB_Comm
         else{
             if(lq.empty() || (!lq.empty() && !sq.empty() && lq.front().rob_tag > sq.front().rob_tag)){
                 if(!sq.empty() && !sq.front().submitted && sq.front().base_ready && sq.front().data_ready){
-                    sq.v[sq.nxt(sq.l.curr)].next.submitted = true; 
+                    sq.v[sq.nxt(sq.l.curr)].next.submitted = true;
                     Dbuf.valid = true;
                     Dbuf.rob_tag = sq.front().rob_tag;
                     Dbuf.mem_read = false, Dbuf.mem_write = true;
