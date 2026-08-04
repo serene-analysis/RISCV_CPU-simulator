@@ -7,6 +7,8 @@
 struct DMEM{
     const static int Memsize_ = 8;
     std::map<uint_32, Unit<uint_8>> DMEM;
+    uint_32 dirty[256];
+    uint_32 dirty_cnt = 0;
     Unit<LSQ_DMEM_Buffer> buf;
     Unit<DMEMEntry> mem[Memsize_];
     uint_32 sent_tag[Memsize_]; // FIX: rob_tag of the entry last sent from each slot, for acceptance identity check
@@ -75,9 +77,11 @@ struct DMEM{
         return;
     }
     void tick(){
-        for(auto &now : DMEM){
-            now.second.curr = now.second.next;
+        for(uint_32 i = 0; i < dirty_cnt; i++){
+            uint_32 a = dirty[i];
+            DMEM[a].curr = DMEM[a].next;
         }
+        dirty_cnt = 0;
         buf.tick();
         buf.next.valid = false;
         for(int i=0;i<Memsize_;i++){
@@ -117,18 +121,23 @@ struct DMEM{
         if(write){
             uint_8 v0 = write_data & 255, v1 = (write_data >> 8) & 255,
                 v2 = (write_data >> 16) & 255, v3 = write_data >> 24;
+            dirty_cnt = 0;
             switch(mask){
                 case 0:{
                     DMEM[addr].next = v0;
+                    dirty[dirty_cnt++] = addr;
                     break;
                 }
                 case 1:{
                     DMEM[addr].next = v0, DMEM[addr + 1].next = v1;
+                    dirty[dirty_cnt++] = addr, dirty[dirty_cnt++] = addr + 1;
                     break;
                 }
                 case 2:{
                     DMEM[addr].next = v0, DMEM[addr + 1].next = v1;
                     DMEM[addr + 2].next = v2, DMEM[addr + 3].next = v3;
+                    dirty[dirty_cnt++] = addr, dirty[dirty_cnt++] = addr + 1;
+                    dirty[dirty_cnt++] = addr + 2, dirty[dirty_cnt++] = addr + 3;
                     break;
                 }
                 default:{
