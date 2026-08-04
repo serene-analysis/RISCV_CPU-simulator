@@ -45,6 +45,11 @@ void IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &
     fprintf(stderr, "IS : flushed = %d, RSstall = %d, ROBstall = %d\n", flushed.curr, RSstall.curr, ROBstall.curr);
     if(flushed.curr){
         buf.next.valid = false;
+        assert(rat.flushed.curr);
+        for(int i=0;i<rat.EntrySize_;i++){
+            rat.ent[i].next.busy = false;
+            rat.ent[i].next.rob_tag = 0;
+        }
         return;
     }
     if(RSstall.curr || ROBstall.curr){

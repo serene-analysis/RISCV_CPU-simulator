@@ -41,9 +41,9 @@ void LSQ::move(LSQ_DMEM_Buffer &Dbuf, CDB_Broadcast_Buffer &Cbuf, const ROB_Comm
                 lq.v[i].next.qbase = 0;
                 lq.v[i].next.vbase = Cbuf.result;
             }
-            if(lq.v[i].curr.qbase == 0){
-                lq.v[i].next.base_ready = true;
-            }
+        }
+        if(lq.v[i].curr.qbase == 0){
+            lq.v[i].next.base_ready = true;
         }
         if(Cbuf.valid && sq.v[i].curr.busy){
             if(sq.v[i].curr.qbase == Cbuf.rob_tag){
@@ -54,12 +54,12 @@ void LSQ::move(LSQ_DMEM_Buffer &Dbuf, CDB_Broadcast_Buffer &Cbuf, const ROB_Comm
                 sq.v[i].next.qdata = 0;
                 sq.v[i].next.vdata = Cbuf.result;
             }
-            if(sq.v[i].curr.qbase == 0){
-                sq.v[i].next.base_ready = true;
-            }
-            if(sq.v[i].curr.qdata == 0){
-                sq.v[i].next.data_ready = true;
-            }
+        }
+        if(sq.v[i].curr.qbase == 0){
+            sq.v[i].next.base_ready = true;
+        }
+        if(sq.v[i].curr.qdata == 0){
+            sq.v[i].next.data_ready = true;
         }
         if(lq.v[i].curr.busy){
             lgot++;

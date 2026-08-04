@@ -19,16 +19,13 @@ void RAT::unlock(const uint_8 &pos, const uint_32 &value){
     return;
 }
 void RAT::flush(){
-    for(int i=0;i<EntrySize_;i++){
-        ent[i].next.busy = false;
-        ent[i].next.rob_tag = 0;
-    }
+    flushed.next = true;
     return;
 }
 void RAT::tick(){
     for(int i=0;i<EntrySize_;i++){
         ent[i].tick();
-
     }
+    flushed.tick(), flushed.next = false;
     return;
 }

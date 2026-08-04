@@ -66,6 +66,7 @@ struct DMEM{
     }
     void flush(){
         flushed.next = true;
+        return;
     }
     void tick(){
         for(auto &now : DMEM){

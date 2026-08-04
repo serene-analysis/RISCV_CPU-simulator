@@ -7,7 +7,12 @@ void CDB::move(ROB &rob, bool &UseA, bool &UseB, bool &UseLS, uint_32 &IdA, uint
         Cbuf.next.valid = false;
         return;
     }
-    if(LSbuf.curr.valid){
+    static int turn = 1;
+    turn++;
+    if(turn == 4){
+        turn = 1;
+    }
+    if(LSbuf.curr.valid && turn == 3){
         UseLS = true, IdLS = LSbuf.curr.submitted_id;
         last_id.next = LSbuf.curr.submitted_id, last_type.next = 3;
         uint_32 pos = LSbuf.curr.rob_tag;
@@ -33,7 +38,7 @@ void CDB::move(ROB &rob, bool &UseA, bool &UseB, bool &UseLS, uint_32 &IdA, uint
         //    Cbuf.next.rob_tag = LSbuf.curr.rob_tag, Cbuf.next.result = LSbuf.curr.load_result;
         //}
     }
-    else if(Bbuf.curr.valid){
+    else if(Bbuf.curr.valid && turn >= 2){
         UseB = true, IdB = Bbuf.curr.submitted_id;
         last_id.next = Bbuf.curr.submitted_id, last_type.next = 2;
         uint_32 pos = Bbuf.curr.rob_tag;

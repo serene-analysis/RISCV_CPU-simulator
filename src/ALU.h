@@ -60,6 +60,7 @@ void ALU::move(ALU_CDB_Buffer &Cbuf, bool &ArithRSStall){
 }
 void ALU::flush(){
     flushed.next = true;
+    return;
 }
 void ALU::tick(){
     buf.tick();

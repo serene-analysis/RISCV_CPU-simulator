@@ -174,6 +174,7 @@ struct RATEntry{
 struct RAT{
     const static int EntrySize_ = 32;
     Unit<RATEntry> ent[EntrySize_];
+    Unit<bool> flushed;
     void query(const uint_8 &pos, uint_32 &ret);
     void mark(const uint_8 &pos, const uint_32 &value);
     void unlock(const uint_8 &pos, const uint_32 &value);
