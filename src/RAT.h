@@ -7,8 +7,10 @@ void RAT::query(const uint_8 &pos, uint_32 &ret){
     return;
 }
 void RAT::mark(const uint_8 &pos, const uint_32 &value){
-    ent[pos].next.busy = true;
-    ent[pos].next.rob_tag = value;
+    if(pos){
+        ent[pos].next.busy = true;
+        ent[pos].next.rob_tag = value;
+    }
     return;
 }
 void RAT::unlock(const uint_8 &pos, const uint_32 &value){

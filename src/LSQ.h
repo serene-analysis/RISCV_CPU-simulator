@@ -34,7 +34,7 @@ void LSQ::move(LSQ_DMEM_Buffer &Dbuf, CDB_Broadcast_Buffer &Cbuf, const ROB_Comm
         return;
     }
     uint_32 lgot = 0, sgot = 0;
-    for(int i=0;i<EntrySize_;i++){
+    for(int i=1;i<=EntrySize_;i++){
         if(Cbuf.valid && lq.v[i].curr.busy){
             if(lq.v[i].curr.qbase == Cbuf.rob_tag){
                 lq.v[i].next.qbase = 0;
