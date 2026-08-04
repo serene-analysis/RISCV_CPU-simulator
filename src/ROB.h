@@ -53,6 +53,9 @@ void ROB::move(IF_IS &If_is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU
         else if(fir.type == 2){
             Regfile.write(fir.rd, fir.value);
             Rat.unlock(fir.rd, fir.rob_tag);
+            Cdb.Cbuf.next.valid = true;
+            Cdb.Cbuf.next.result = fir.value;
+            Cdb.Cbuf.next.rob_tag = fir.rob_tag;
             if(fir.branch_misjumped){
                 //fprintf(stderr, "misjumped\n");
                 If_is.flush(), Ars.flush(), Brs.flush(), Lsq.flush(), Alu.flush(), Bu.flush(), Dmem.flush(), Cdb.flush(), Rat.flush(), flush();

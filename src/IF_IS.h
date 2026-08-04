@@ -126,8 +126,8 @@ void IF_IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffe
                 Bbuf.nojump_dest = bPC + 4;
                 Bbuf.jump_dest = bPC + inst.imm;
                 Bbuf.PC = bPC;
-                //Bbuf.predicted_jump = true;
-                //PC.next = bPC + inst.imm; // Need an adder
+                Bbuf.predicted_jump = true;
+                PC.next = bPC + inst.imm; // Need an adder
             }
             else if(inst.is_jump){ // jalr
                 uint_32 ntag = 0, nqj = 0, nqk = 0;
