@@ -64,7 +64,9 @@ signed main(){
         brs.tick();
         ars.tick();
         alu.tick();
+        timestamp++;
     }
+    fprintf(stderr, "cycles=%d instructions=%u\n", timestamp, rob.committed);
     return 0;
 }
 /*

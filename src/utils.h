@@ -130,6 +130,8 @@ struct IF_IS{
     Unit<uint_32> PC, redirected_PC;
     Decoder dec;
     Unit<bool> RSstall, ROBstall, flushed, redirected;
+    uint_8 bht[256] = {};
+    void update_bht(const uint_32 &pc, const bool &taken);
     void move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &LSbuf, RAT &rat, RegFile &regfile, ROB &rob, uint_32 &end_tag);
     void flush();
     void tick();
@@ -251,6 +253,7 @@ struct ROB{
     Queue<ROBEntry, Queuesize_> qu;
     Unit<ROB_CommitStore_Buffer> Rbuf;
     Unit<bool> flushed;
+    uint_32 committed = 0;
     void allocate(const uint_8 &type, const uint_8 &rd, const uint_32 PC, const bool &predicted_jump,
         const uint_32 &nojump_dest, const uint_32 &jump_dest, bool &ISStall, uint_32 &ret);
     void move(IF_IS &if_is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU &Bu,

@@ -39,6 +39,19 @@ struct IS_LSQ_Buffer{
 };
 */
 
+void IF_IS::update_bht(const uint_32 &pc, const bool &taken){
+    uint_32 idx = (pc >> 2) & 255;
+    uint_8 cnt = bht[idx];
+    if(taken){
+        cnt = (cnt >= 3) ? 3 : cnt + 1;
+    }
+    else{
+        cnt = (cnt == 0) ? 0 : cnt - 1;
+    }
+    bht[idx] = cnt;
+    return;
+}
+
 void IF_IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &LSbuf, RAT &rat, RegFile &regfile, ROB &rob, uint_32 &end_tag){
     bool bvalid = false;
     uint_32 binst = 0, bPC = 0;
@@ -156,6 +169,10 @@ void IF_IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffe
                 rob.allocate(1, 0, bPC, false, 0, 0, ROBstall.next, ntag), Bbuf.rob_tag = ntag;
                 if(binst == 0x0ff00513){
                     end_tag = ntag;
+                }
+                Bbuf.predicted_jump = (bht[(bPC >> 2) & 255] >= 2);
+                if(Bbuf.predicted_jump){
+                    PC.next = bPC + inst.imm;
                 }
                 rat.query(inst.rs1, nqj), rat.query(inst.rs2, nqk), Bbuf.qj = nqj, Bbuf.qk = nqk;
                 if(!nqj){

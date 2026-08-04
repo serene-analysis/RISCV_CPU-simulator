@@ -48,7 +48,7 @@ void ROB::move(IF_IS &If_is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU
             Cdb.Cbuf.next.valid = true;
             Cdb.Cbuf.next.result = fir.value;
             Cdb.Cbuf.next.rob_tag = fir.rob_tag;
-            qu.pop();
+            qu.pop(), committed++;
         }
         else if(fir.type == 2){
             Regfile.write(fir.rd, fir.value);
@@ -65,7 +65,8 @@ void ROB::move(IF_IS &If_is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU
             else{
                 //fprintf(stderr, "not misjumped\n");
             }
-            qu.pop();
+            If_is.update_bht(fir.value - 4, (fir.actual_dest != fir.value));
+            qu.pop(), committed++;
         }
         else if(fir.type == 3){
             if(fir.is_read){
@@ -74,7 +75,7 @@ void ROB::move(IF_IS &If_is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU
                 Cdb.Cbuf.next.valid = true;
                 Cdb.Cbuf.next.result = fir.value;
                 Cdb.Cbuf.next.rob_tag = fir.rob_tag;
-                qu.pop();
+                qu.pop(), committed++;
             }
             else{
                 if(fir.remaining_round != 0){
@@ -85,7 +86,7 @@ void ROB::move(IF_IS &If_is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU
                     Dmem.DMEM_operation(fir.value, false, true, fir.mem_unsigned, fir.mem_mask, fir.write_addr, no_use);
                     Rbuf.next.valid = true;
                     Rbuf.next.rob_tag = fir.rob_tag;
-                    qu.pop();
+                    qu.pop(), committed++;
                     //Lsq.sq.pop(); // LSQ will deal with that
                 }
             }
