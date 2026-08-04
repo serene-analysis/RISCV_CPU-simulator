@@ -39,7 +39,7 @@ signed main(){
     }
     If.PC.curr = If.PC.next = 0;
     int timestamp = 0;
-    bool ended = false, always = false;
+    bool ended = false, always = true;
     uint_32 end_tag = 0;
     while(!ended && (timestamp < 400 || always)){
         fprintf(stderr, "timestamp = %d\n", ++timestamp);
