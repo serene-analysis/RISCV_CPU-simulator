@@ -154,7 +154,7 @@ struct ArithRSEntry{
 
 struct RATEntry{
     bool busy = false;
-    uint_32 rob_tag;
+    uint_32 rob_tag = 0;
 };
 struct RAT{
     const static int EntrySize_ = 32;
