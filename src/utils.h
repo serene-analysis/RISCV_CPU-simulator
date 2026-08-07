@@ -124,7 +124,7 @@ struct IF_IS{
     Unit<uint_32> PC, redirected_PC;
     Decoder dec;
     Unit<bool> RSstall, ROBstall, flushed, redirected;
-    uint_8 bht[256] = {};
+    Unit<uint_8> bht[256];
     void update_bht(const uint_32 &pc, const bool &taken);
     void move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffer &LSbuf, RAT &rat, RegFile &regfile, ROB &rob, uint_32 &end_tag);
     void flush();

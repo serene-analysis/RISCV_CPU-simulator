@@ -6,14 +6,14 @@
 
 void IF_IS::update_bht(const uint_32 &pc, const bool &taken){
     uint_32 idx = (pc >> 2) & 255;
-    uint_8 cnt = bht[idx];
+    uint_8 cnt = bht[idx].curr;
     if(taken){
         cnt = (cnt >= 3) ? 3 : cnt + 1;
     }
     else{
         cnt = (cnt == 0) ? 0 : cnt - 1;
     }
-    bht[idx] = cnt;
+    bht[idx].next = cnt;
     return;
 }
 
@@ -134,7 +134,7 @@ void IF_IS::move(IS_ArithRS_Buffer &Abuf, IS_BranchRS_Buffer &Bbuf, IS_LSQ_Buffe
                 if(binst == 0x0ff00513){
                     end_tag = ntag;
                 }
-                Bbuf.predicted_jump = (bht[(bPC >> 2) & 255] >= 2);
+                Bbuf.predicted_jump = (bht[(bPC >> 2) & 255].curr >= 2);
                 if(Bbuf.predicted_jump){
                     PC.next = bPC + inst.imm;
                 }
@@ -193,6 +193,9 @@ void IF_IS::flush(){
 }
 void IF_IS::tick(){
     PC.tick(), redirected_PC.tick();
+    for(int i=0;i<256;i++){
+        bht[i].tick();
+    }
     RSstall.tick(), ROBstall.tick(), flushed.tick(), redirected.tick();
     RSstall.next = ROBstall.next = flushed.next = redirected.next = false;
     return;

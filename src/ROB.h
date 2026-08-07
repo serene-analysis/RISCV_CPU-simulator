@@ -44,7 +44,6 @@ void ROB::move(IF_IS &If_is, ArithRS &Ars, BranchRS &Brs, LSQ &Lsq, ALU &Alu, BU
             Cdb.Cbuf.next.result = fir.value;
             Cdb.Cbuf.next.rob_tag = fir.rob_tag;
             if(fir.branch_misjumped){
-                
                 If_is.flush(), Ars.flush(), Brs.flush(), Lsq.flush(), Alu.flush(), Bu.flush(), Dmem.flush(), Cdb.flush(), Rat.flush(), flush();
                 If_is.redirected.next = true;
                 If_is.redirected_PC.next = fir.actual_dest;
