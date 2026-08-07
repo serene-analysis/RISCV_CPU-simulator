@@ -86,7 +86,7 @@ void CDB::move(ROB &rob, bool &UseA, bool &UseB, bool &UseLS, uint_32 &IdA, uint
     return;
 }
 void CDB::flush(){
-    flushed.curr = true;
+    flushed.next = true;
     return;
 }
 void CDB::tick(){
